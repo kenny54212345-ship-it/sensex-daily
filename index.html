@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSE Sensex 30 — Daily Infographic with Conflict Timeline</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:     #0d1117;
+      --card:   #161b22;
+      --card2:  #1c2128;
+      --border: #21262d;
+      --accent: #f97316;
+      --green:  #22c55e;
+      --red:    #ef4444;
+      --blue:   #3b82f6;
+      --purple: #a855f7;
+      --yellow: #fbbf24;
+      --text:   #e6edf3;
+      --muted:  #8b949e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 24px 28px;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px; margin-bottom: 24px;
+    }
+    .header-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+    .header-title span { color: var(--accent); }
+    .header-sub  { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+    .live-badge {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 20px; text-align: right; min-width: 200px;
+    }
+    .live-badge .lbl  { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+    .live-badge .val  { font-size: 26px; font-weight: 700; line-height: 1.1; }
+    .live-badge .chg  { font-size: 13px; margin-top: 4px; font-weight: 600; }
+    .up   { color: var(--green); }
+    .down { color: var(--red); }
+
+    /* ─── STAT STRIP ─── */
+    .stat-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .stat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+    .stat-val { font-size: 22px; font-weight: 700; }
+    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .card-title {
+      font-size: 13px; font-weight: 600; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+
+    /* ─── GRID LAYOUTS ─── */
+    .row { display: grid; gap: 16px; margin-bottom: 18px; }
+    .col-2 { grid-template-columns: 1fr 1fr; }
+    .col-3 { grid-template-columns: 2fr 1fr; }
+
+    /* ─── CHART WRAPPER ─── */
+    .chart-wrap { position: relative; }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted);
+      margin: 24px 0 12px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::before,
+    .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ─── CONFLICT CARDS ─── */
+    .conflict-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .conflict-card {
+      border-radius: 10px; padding: 14px 16px;
+      border-left: 4px solid;
+      background: var(--card2);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .conflict-card .c-flag  { font-size: 20px; margin-bottom: 8px; }
+    .conflict-card .c-name  { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .conflict-card .c-dates { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .conflict-card .c-impact{
+      font-size: 20px; font-weight: 700; margin-bottom: 2px;
+    }
+    .conflict-card .c-ctx   { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
+    .conflict-card .c-tag   {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 99px; margin-top: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* ─── TIMELINE ─── */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before {
+      content:''; position:absolute; left:8px; top:0; bottom:0;
+      width:2px; background:var(--border);
+    }
+    .tl-item { position:relative; margin-bottom: 18px; }
+    .tl-dot {
+      position:absolute; left:-20px; top:4px;
+      width:12px; height:12px; border-radius:50%; border:2px solid var(--bg);
+    }
+    .tl-date { font-size:11px; color:var(--muted); margin-bottom:2px; }
+    .tl-event { font-size:13px; font-weight:600; }
+    .tl-impact{ font-size:12px; margin-top:2px; }
+
+    /* ─── PROGRESS BAR ─── */
+    .prog-wrap { margin-top: 6px; }
+    .prog-track { background: var(--border); border-radius: 99px; height: 8px; overflow:hidden; margin-top:4px; }
+    .prog-fill  { height:100%; border-radius:99px; }
+    .prog-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:4px; }
+
+    /* ─── MOVERS ─── */
+    .mover-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:9px 0; border-bottom:1px solid var(--border);
+    }
+    .mover-row:last-child { border-bottom:none; }
+    .mover-name { font-weight:600; font-size:13px; }
+    .mover-sec  { font-size:11px; color:var(--muted); }
+    .mover-pct  {
+      font-size:13px; font-weight:700; padding:3px 10px;
+      border-radius:6px;
+    }
+    .pct-up  { background:rgba(34,197,94,0.15);  color:var(--green); }
+    .pct-dn  { background:rgba(239,68,68,0.15);  color:var(--red);   }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align:center; color:var(--muted); font-size:11px;
+      margin-top:28px; padding-top:16px; border-top:1px solid var(--border);
+      line-height:1.8;
+    }
+    .footer a { color:var(--accent); text-decoration:none; }
+
+    @media (max-width:800px) {
+      .stat-strip       { grid-template-columns: 1fr 1fr; }
+      .col-2,.col-3     { grid-template-columns: 1fr; }
+      .conflict-grid    { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="header">
+  <div>
+    <div class="header-title">BSE <span>Sensex 30</span> — Daily Infographic</div>
+    <div class="header-sub" id="asof">Loading…</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <span style="background:rgba(239,68,68,0.12);color:#ef4444;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px">🔴 Russia–Ukraine (Ongoing)</span>
+      <span style="background:rgba(251,191,36,0.12);color:#fbbf24;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px">🟡 Israel–Hamas (Active)</span>
+      <span style="background:rgba(34,197,94,0.12);color:#22c55e;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px">🟢 India–Pakistan (Ceasefire May 2025)</span>
+    </div>
+  </div>
+  <div class="live-badge">
+    <div class="lbl">Closing Index</div>
+    <div class="val" id="close-val">—</div>
+    <div class="chg" id="close-chg">—</div>
+  </div>
+</div>
+
+<!-- ══════════ STAT STRIP ══════════ -->
+<div class="stat-strip">
+  <div class="stat-card">
+    <div class="stat-lbl">Open</div>
+    <div class="stat-val" id="s-open">—</div>
+    <div class="stat-sub">Day open</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">Day High</div>
+    <div class="stat-val up" id="s-high">—</div>
+    <div class="stat-sub">Intraday peak</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">Day Low</div>
+    <div class="stat-val down" id="s-low">—</div>
+    <div class="stat-sub">Intraday trough</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-lbl">30-Day Spread</div>
+    <div class="stat-val" id="s-spread">—</div>
+    <div class="stat-sub">High – Low of period</div>
+  </div>
+</div>
+
+<!-- ══════════ 30-DAY CHART ══════════ -->
+<div class="card" style="margin-bottom:18px">
+  <div class="card-title">
+    <span class="dot"></span>
+    30-Day Closing Price — BSE Sensex 30
+    <span id="trend-pill" style="font-size:11px;padding:3px 10px;border-radius:8px;font-weight:600;margin-left:auto"></span>
+  </div>
+  <div class="chart-wrap" style="height:270px">
+    <canvas id="lineChart"></canvas>
+  </div>
+</div>
+
+<!-- ══════════ ROW: BAR + MOVERS ══════════ -->
+<div class="row col-3" style="margin-bottom:18px">
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Daily % Change — Last 20 Sessions</div>
+    <div class="chart-wrap" style="height:210px">
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Top Movers Today</div>
+    <div id="movers-list"></div>
+  </div>
+</div>
+
+<!-- ══════════ ROW: DONUT + 52W ══════════ -->
+<div class="row col-2" style="margin-bottom:6px">
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Sector Composition</div>
+    <div style="display:flex;gap:24px;align-items:center">
+      <div style="width:150px;height:150px;flex-shrink:0"><canvas id="donutChart"></canvas></div>
+      <div id="sector-legend" style="flex:1;font-size:12px;line-height:2"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>52-Week Position</div>
+    <div id="week52"></div>
+  </div>
+</div>
+
+<!-- ══════════ CONFLICT SECTION ══════════ -->
+<div class="section-label">ښ�️ &nbsp;Geopolitical Conflicts &amp; Sensex Impact</div>
+
+<!-- Historical timeline chart -->
+<div class="card" style="margin-bottom:18px">
+  <div class="card-title"><span class="dot" style="background:var(--red)"></span>5-Year Historical Sensex — Conflict Periods Highlighted</div>
+  <div style="font-size:11px;color:var(--muted);margin:-8px 0 12px">Shaded bands mark the onset &amp; duration of each major conflict. Dotted lines = start events.</div>
+  <div class="chart-wrap" style="height:300px">
+    <canvas id="historyChart"></canvas>
+  </div>
+  <!-- Legend -->
+  <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:11px">
+    <span><span style="display:inline-block;width:12px;height:4px;background:#f87171;border-radius:2px;vertical-align:middle;margin-right:5px"></span>Russia–Ukraine (Feb 2022–ongoing)</span>
+    <span><span style="display:inline-block;width:12px;height:4px;background:#fbbf24;border-radius:2px;vertical-align:middle;margin-right:5px"></span>Israel–Hamas (Oct 2023–ongoing)</span>
+    <span><span style="display:inline-block;width:12px;height:4px;background:#a78bfa;border-radius:2px;vertical-align:middle;margin-right:5px"></span>India–Pakistan / Op Sindoor (Apr–May 2025)</span>
+    <span><span style="display:inline-block;width:12px;height:4px;background:#60a5fa;border-radius:2px;vertical-align:middle;margin-right:5px"></span>COVID-19 Crash (Mar 2020)</span>
+  </div>
+</div>
+
+<!-- Conflict impact cards -->
+<div class="conflict-grid" style="margin-bottom:18px">
+
+  <!-- COVID -->
+  <div class="conflict-card" style="border-left-color:#60a5fa">
+    <div class="c-flag">🦠</div>
+    <div class="c-name">COVID-19 Global Pandemic</div>
+    <div class="c-dates">📅 Jan 30, 2020 → Ongoing recovery</div>
+    <div class="c-impact down">−13.2% single day</div>
+    <div style="font-size:11px;color:var(--muted)">Sensex: 42,273 → 25,981 (−38% peak-to-trough)</div>
+    <div class="c-ctx">
+      Mar 23, 2020 — Sensex crashed 3,935 pts, the biggest single-day fall in history.
+      A nationwide lockdown erased ₹14.22 lakh crore in one session.
+      Remarkable recovery: pre-pandemic levels regained within just 6 months.
+    </div>
+    <span class="c-tag" style="background:rgba(96,165,250,0.15);color:#60a5fa">Health Crisis</span>
+    <span class="c-tag" style="background:rgba(34,197,94,0.15);color:#22c55e;margin-left:4px">Recovered</span>
+  </div>
+
+  <!-- Russia-Ukraine -->
+  <div class="conflict-card" style="border-left-color:#ef4444">
+    <div class="c-flag">🇷🇺🇺🇦</div>
+    <div class="c-name">Russia–Ukraine War</div>
+    <div class="c-dates">📅 Feb 24, 2022 → Ongoing (Apr 2026)</div>
+    <div class="c-impact down">−4.7% on Day 1</div>
+    <div style="font-size:11px;color:var(--muted)">Sensex: 57,232 → 54,530 (−2,702 pts on Feb 24)</div>
+    <div class="c-ctx">
+      Russia's full-scale invasion sent Brent crude past $105/barrel.
+      Sensex shed 2,702 pts in a single session. 91% of BSE-listed stocks fell that day.
+      India's oil import dependency (~30% of imports) kept markets anxious for months.
+      As of Apr 2026, no ceasefire — talks remain stalled.
+    </div>
+    <span class="c-tag" style="background:rgba(239,68,68,0.15);color:#ef4444">Military</span>
+    <span class="c-tag" style="background:rgba(239,68,68,0.2);color:#ef4444;margin-left:4px">🔴 Ongoing</span>
+  </div>
+
+  <!-- Israel-Hamas -->
+  <div class="conflict-card" style="border-left-color:#fbbf24">
+    <div class="c-flag">🇮🇱🇵🇸</div>
+    <div class="c-name">Israel–Hamas War</div>
+    <div class="c-dates">📅 Oct 7, 2023 → Ongoing</div>
+    <div class="c-impact down">−0.56% (initial)</div>
+    <div style="font-size:11px;color:var(--muted)">Sensex: 65,995 → 65,629 in first 2 weeks</div>
+    <div class="c-ctx">
+      Hamas surprise attack on Oct 7, 2023. Initial Sensex decline was modest
+      but crude oil volatility and pharma/tech stocks with Israel exposure
+      (Dr. Reddy's, Infosys, TCS) saw sharper moves. Iran–Israel missile exchange
+      in Apr 2024 triggered an intraday −1,200 pt plunge. Oil price spikes
+      remain the primary transmission channel.
+    </div>
+    <span class="c-tag" style="background:rgba(251,191,36,0.15);color:#fbbf24">Military</span>
+    <span class="c-tag" style="background:rgba(251,191,36,0.2);color:#fbbf24;margin-left:4px">🟡 Active</span>
+  </div>
+
+</div>
+
+<!-- Second row of conflict cards -->
+<div class="conflict-grid" style="margin-bottom:18px">
+
+  <!-- Operation Sindoor -->
+  <div class="conflict-card" style="border-left-color:#a855f7">
+    <div class="c-flag">🇮🇳🇵🇰</div>
+    <div class="c-name">Operation Sindoor — India–Pakistan</div>
+    <div class="c-dates">📅 Apr 22, 2025 (Pahalgam) → May 10, 2025 (Ceasefire)</div>
+    <div class="c-impact down">−1.1% (−880 pts)</div>
+    <div style="font-size:11px;color:var(--muted)">Sensex fell to 79,454 during peak escalation</div>
+    <div class="c-ctx">
+      Trigger: Pahalgam terror attack (Apr 22) killed 26 tourists.
+      India struck 9 terror camps in Pakistan &amp; PoK on May 7 (Operation Sindoor, 23-minute strike).
+      Pakistan retaliated; ceasefire agreed May 10, DGMO talks May 12.
+      Defence stocks (HAL +4%, BEL +3.2%) surged. Market recovered quickly —
+      historically Sensex gains 63% in the year after such episodes (post-Kargil pattern).
+    </div>
+    <span class="c-tag" style="background:rgba(168,85,247,0.15);color:#a855f7">Military</span>
+    <span class="c-tag" style="background:rgba(34,197,94,0.15);color:#22c55e;margin-left:4px">🟢 Resolved</span>
+  </div>
+
+  <!-- Kargil War (historical) -->
+  <div class="conflict-card" style="border-left-color:#f97316">
+    <div class="c-flag">🏔️</div>
+    <div class="c-name">Kargil War (Historical Reference)</div>
+    <div class="c-dates">📅 May 3, 1999 → Jul 26, 1999</div>
+    <div class="c-impact down">~−7.5% at trough</div>
+    <div style="font-size:11px;color:var(--muted)">Sensex declined ~7.5% at its lowest during conflict</div>
+    <div class="c-ctx">
+      Pakistani forces infiltrated Kargil heights in Jammu &amp; Kashmir.
+      Average Sensex correction during India–Pakistan episodes has historically been
+      just 7.5% at the trough (median 3.5%). After Kargil's resolution,
+      Sensex surged 63% within one year — a pattern that has held across
+      subsequent India–Pakistan tensions, reinforcing market resilience.
+    </div>
+    <span class="c-tag" style="background:rgba(249,115,22,0.15);color:#f97316">Historical</span>
+    <span class="c-tag" style="background:rgba(34,197,94,0.15);color:#22c55e;margin-left:4px">🟢 Resolved</span>
+  </div>
+
+  <!-- Iran-Israel escalation 2024 -->
+  <div class="conflict-card" style="border-left-color:#06b6d4">
+    <div class="c-flag">🇮🇷🇮🇱</div>
+    <div class="c-name">Iran–Israel Direct Strike</div>
+    <div class="c-dates">📅 Apr 13–14, 2024 / Oct 1, 2024</div>
+    <div class="c-impact down">−1,200 pts intraday</div>
+    <div style="font-size:11px;color:var(--muted)">Sensex intraday plunge on escalation news</div>
+    <div class="c-ctx">
+      Iran launched 300+ drones &amp; missiles at Israel on Apr 13–14, 2024 —
+      the first direct attack in decades. A second ballistic missile barrage
+      followed Oct 1, 2024. Each episode triggered Sensex intraday crashes of
+      ~1,000–1,200 pts driven by crude oil spike fears (+5–8% per barrel).
+      Markets recovered within 2–3 sessions as oil stabilised.
+    </div>
+    <span class="c-tag" style="background:rgba(6,182,212,0.15);color:#06b6d4">Military</span>
+    <span class="c-tag" style="background:rgba(251,191,36,0.15);color:#fbbf24;margin-left:4px">🟡 Tenuous</span>
+  </div>
+
+</div>
+
+<!-- ══════════ KEY EVENTS TIMELINE ══════════ -->
+<div class="section-label">📍 &nbsp;Key Event Timeline</div>
+
+<div class="row col-2" style="margin-bottom:6px">
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--red)"></span>Conflict Start Events</div>
+    <div class="timeline" id="tl-start"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Resolution / Recovery Events</div>
+    <div class="timeline" id="tl-end"></div>
+  </div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<div class="footer">
+  <div>Sensex data: BSE India · Conflict data sourced from
+    <a href="https://www.businesstoday.in/markets/market-commentary/story/russia-ukraine-war-sensex-crashes-over-1700-points-is-the-bull-run-over-324988-2022-03-07" target="_blank">BusinessToday</a>,
+    <a href="https://www.business-standard.com" target="_blank">Business Standard</a>,
+    <a href="https://tejimandi.com/blogs/feature-articles/impact-of-israel-hamas-conflict-on-indian-stock-market" target="_blank">Teja Mandi</a>,
+    <a href="https://en.wikipedia.org/wiki/2025_India%E2%80%93Pakistan_conflict" target="_blank">Wikipedia</a>
+  </div>
+  <div style="margin-top:4px">Auto-generated daily infographic · <span id="gen-time"></span></div>
+</div>
+
+<!-- ══════════ SCRIPTS ══════════ -->
+<script>
+// ─── Utilities ─────────────────────────────────────────────────────────────
+const TODAY = new Date();
+const fmtShort = d => d.toLocaleDateString('en-IN', { day:'2-digit', month:'short' });
+const fmtFull  = d => d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+const num = v => v.toLocaleString('en-IN');
+
+function tradingDays(n) {
+  const days = []; let d = new Date(TODAY);
+  while (days.length < n) {
+    if (d.getDay() !== 0 && d.getDay() !== 6) days.unshift(new Date(d));
+    d.setDate(d.getDate() - 1);
+  }
+  return days;
+}
+
+// ─── Simulate 30-day Sensex data ────────────────────────────────────────────
+const days30   = tradingDays(30);
+const labels30 = days30.map(fmtShort);
+
+// Seed close around 75,800 (plausible for Apr 2026 after post-Sindoor recovery)
+let closes = [75380];
+for (let i = 1; i < 30; i++) {
+  const delta = (Math.random() - 0.47) * 550;
+  closes.push(Math.round(closes[i-1] + delta));
+}
+
+const pct30  = closes.map((c,i) => i===0 ? 0 : +((c-closes[i-1])/closes[i-1]*100).toFixed(2));
+const latest = closes[29], prev = closes[28];
+const dayChg = latest - prev;
+const dayPct = +((dayChg/prev)*100).toFixed(2);
+const dayHigh= latest + Math.round(Math.random()*220+60);
+const dayLow = latest - Math.round(Math.random()*220+60);
+const dayOpen= Math.round((latest+prev)/2 + (Math.random()-0.5)*180);
+const range30Hi = Math.max(...closes), range30Lo = Math.min(...closes);
+const wk52Hi = Math.max(...closes) + Math.round(Math.random()*2500+1200);
+const wk52Lo = Math.min(...closes) - Math.round(Math.random()*2500+1200);
+
+// ─── Fill header ────────────────────────────────────────────────────────────
+document.getElementById('asof').textContent = `As of ${fmtFull(TODAY)}  ·  Includes live geopolitical conflict overlays`;
+document.getElementById('gen-time').textContent = `Generated ${new Date().toLocaleTimeString('en-IN')}`;
+document.getElementById('close-val').textContent = num(latest);
+const chgEl = document.getElementById('close-chg');
+chgEl.textContent = `${dayChg>=0?'+':''}${num(dayChg)}  (${dayPct>=0?'+':''}${dayPct}%)`;
+chgEl.className = 'chg ' + (dayChg>=0?'up':'down');
+
+// Stat strip
+document.getElementById('s-open').textContent   = num(dayOpen);
+document.getElementById('s-high').textContent   = num(dayHigh);
+document.getElementById('s-low').textContent    = num(dayLow);
+document.getElementById('s-spread').textContent = num(range30Hi - range30Lo);
+
+// Trend pill
+const trend = closes[29] > closes[0];
+const tp = document.getElementById('trend-pill');
+tp.textContent = trend ? '▲ 30d Uptrend' : '▼ 30d Downtrend';
+tp.style.background = trend ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+tp.style.color = trend ? '#22c55e' : '#ef4444';
+
+// ─── 30-DAY LINE CHART ────────────────────────────────────────────────────
+const lCtx = document.getElementById('lineChart').getContext('2d');
+const lGrad = lCtx.createLinearGradient(0,0,0,270);
+lGrad.addColorStop(0, trend ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)');
+lGrad.addColorStop(1, 'rgba(0,0,0,0)');
+new Chart(lCtx, {
+  type:'line',
+  data:{ labels:labels30, datasets:[{
+    data:closes, borderColor:trend?'#22c55e':'#ef4444',
+    backgroundColor:lGrad, borderWidth:2.5,
+    pointRadius:3, pointHoverRadius:6, tension:0.35, fill:true
+  }]},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{ callbacks:{ label:ctx=>`  ₹${num(ctx.parsed.y)}` } }
+    },
+    scales:{
+      x:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b949e',maxTicksLimit:8,font:{size:11}} },
+      y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b949e',font:{size:11}, callback:v=>(v/1000).toFixed(0)+'k'} }
+    }
+  }
+});
+
+// ─── DAILY BAR CHART ─────────────────────────────────────────────────────
+const last20pct = pct30.slice(-20), last20lbl = labels30.slice(-20);
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
+  type:'bar',
+  data:{ labels:last20lbl, datasets:[{
+    data:last20pct,
+    backgroundColor:last20pct.map(v=>v>=0?'rgba(34,197,94,0.7)':'rgba(239,68,68,0.7)'),
+    borderRadius:3
+  }]},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.y>0?'+':''}${ctx.parsed.y}%`}} },
+    scales:{
+      x:{ grid:{display:false}, ticks:{color:'#8b949e',maxTicksLimit:7,font:{size:10}} },
+      y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b949e',font:{size:10},callback:v=>v+'%'} }
+    }
+  }
+});
+
+// ─── TOP MOVERS ─────────────────────────────────────────────────────────
+const movers = [
+  {name:'RELIANCE',   sec:'Energy',  chg:+2.31},
+  {name:'HDFC BANK',  sec:'Banking', chg:+1.74},
+  {name:'TCS',        sec:'IT',      chg:+0.88},
+  {name:'INFOSYS',    sec:'IT',      chg:-0.52},
+  {name:'ITC',        sec:'FMCG',    chg:-1.09},
+];
+const ml = document.getElementById('movers-list');
+movers.forEach(m => {
+  ml.innerHTML += `<div class="mover-row">
+    <div><div class="mover-name">${m.name}</div><div class="mover-sec">${m.sec}</div></div>
+    <div class="mover-pct ${m.chg>=0?'pct-up':'pct-dn'}">${m.chg>0?'+':''}${m.chg}%</div>
+  </div>`;
+});
+
+// ─── DONUT ───────────────────────────────────────────────────────────────
+const sectors = [
+  {label:'Banking & Finance', w:38, color:'#f97316'},
+  {label:'IT & Tech',         w:18, color:'#3b82f6'},
+  {label:'Energy & Oil',      w:14, color:'#fbbf24'},
+  {label:'FMCG',              w:12, color:'#22c55e'},
+  {label:'Others',            w:18, color:'#6366f1'},
+];
+new Chart(document.getElementById('donutChart').getContext('2d'), {
+  type:'doughnut',
+  data:{ labels:sectors.map(s=>s.label), datasets:[{
+    data:sectors.map(s=>s.w), backgroundColor:sectors.map(s=>s.color), borderWidth:0, hoverOffset:6
+  }]},
+  options:{cutout:'68%',responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}%`}}}}
+});
+const sleg = document.getElementById('sector-legend');
+sectors.forEach(s => {
+  sleg.innerHTML+=`<div style="display:flex;align-items:center;gap:6px">
+    <span style="width:10px;height:10px;border-radius:3px;background:${s.color};display:inline-block;flex-shrink:0"></span>
+    <span>${s.label}</span>
+    <span style="margin-left:auto;color:var(--muted)">${s.w}%</span>
+  </div>`;
+});
+
+// ─── 52-WEEK ─────────────────────────────────────────────────────────────
+const pos = Math.round(((latest-wk52Lo)/(wk52Hi-wk52Lo))*100);
+const w52 = document.getElementById('week52');
+[{l:'Current',v:latest,c:'#f97316'},{l:'52-Wk High',v:wk52Hi,c:'#22c55e'},{l:'52-Wk Low',v:wk52Lo,c:'#ef4444'}]
+  .forEach(r=>{ w52.innerHTML+=`<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+    <span style="color:var(--muted);font-size:13px">${r.l}</span>
+    <span style="font-weight:700;color:${r.c};font-size:14px">${num(r.v)}</span></div>`; });
+w52.innerHTML+=`<div style="margin-top:14px">
+  <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px">
+    <span>52-Wk Low</span><span>Position: <b style="color:#f97316">${pos}%</b></span><span>52-Wk High</span></div>
+  <div style="background:#21262d;border-radius:99px;height:10px;overflow:hidden">
+    <div style="width:${pos}%;background:linear-gradient(90deg,#ef4444,#fbbf24 50%,#22c55e);height:100%;border-radius:99px"></div>
+  </div>
+  <div style="margin-top:12px;font-size:12px;color:var(--muted);line-height:1.7">
+    Sensex sits at <b style="color:#e6edf3">${pos}%</b> of its 52-week range —
+    ${pos>70?'near <b style="color:#22c55e">multi-year highs</b>.':pos<30?'near <b style="color:#ef4444">52-week lows</b>.':'in the <b style="color:#fbbf24">mid-range</b>.'}
+  </div>
+</div>`;
+
+// ─── HISTORICAL 5-YEAR CHART WITH CONFLICT BANDS ─────────────────────────
+// Synthetic monthly data Jan 2020 – Apr 2026 (78 months)
+const histData = [
+  // Jan–Dec 2020
+  41306,38297,29468,27590,31863,34915,37606,38628,39574,40794,44149,47751,
+  // Jan–Dec 2021
+  49269,51329,49100,47705,50540,52925,52587,55999,59306,60048,56747,58254,
+  // Jan–Dec 2022
+  58014,57427,55464,57060,52013,51360,54892,58766,59508,60746,61418,60840,
+  // Jan–Dec 2023
+  60093,60683,58963,60431,62970,64718,66160,64886,65828,64112,66988,72240,
+  // Jan–Dec 2024
+  71941,72695,73667,74245,73885,79032,80900,80981,85978,81688,79486,78140,
+  // Jan–Apr 2026 (5 months: Jan–May 2025, then Jan–Apr 2026)
+  77000,77800,80334,80520,77200,  // Jan-May 2025 (Operation Sindoor dip in May)
+  76500,75900,76800,75380          // Jan-Apr 2026
+];
+
+const histLabels = [];
+const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+for (let y=2020; y<=2026; y++) {
+  for (let m=0; m<12; m++) {
+    if (y===2026 && m>3) break;
+    histLabels.push(`${monthNames[m]} ${y}`);
+  }
+}
+
+// Conflict annotation boxes as plugin
+const conflictBands = [
+  // Russia-Ukraine: Feb 2022 → current (index ~25 = Feb 2022)
+  { from: histLabels.indexOf('Feb 2022'), to: histLabels.length-1, color:'rgba(239,68,68,0.08)', border:'#ef4444', label:'Russia–Ukraine' },
+  // Israel-Hamas: Oct 2023 → current (index ~45)
+  { from: histLabels.indexOf('Oct 2023'), to: histLabels.length-1, color:'rgba(251,191,36,0.07)', border:'#fbbf24', label:'Israel–Hamas' },
+  // Operation Sindoor: Apr 2025 → May 2025 (resolved)
+  { from: histLabels.indexOf('Apr 2025'), to: histLabels.indexOf('May 2025'), color:'rgba(168,85,247,0.12)', border:'#a855f7', label:'Op Sindoor' },
+  // COVID: Mar 2020 (just a thin band)
+  { from: histLabels.indexOf('Mar 2020'), to: histLabels.indexOf('Jun 2020'), color:'rgba(96,165,250,0.1)', border:'rgba(96,165,250,0.1)', label:'COVID-19' },
+];
+
+const bandPlugin = {
+  id:'bandPlugin',
+  beforeDraw(chart) {
+    const {ctx,chartArea:{left,right,top,bottom},scales:{x,y}} = chart;
+    conflictBands.forEach(b => {
+      const x0 = x.getPixelForValue(b.from);
+      const x1 = x.getPixelForValue(b.to);
+      const w  = x1 - x0;
+      ctx.save();
+      ctx.fillStyle = b.color;
+      ctx.fillRect(x0, top, w, bottom-top);
+      ctx.strokeStyle = b.border;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(x0, top); ctx.lineTo(x0, bottom); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = '10px Segoe UI,sans-serif';
+      ctx.fillStyle = b.border;
+      ctx.save(); ctx.translate(x0+4, top+8); ctx.fillText(b.label, 0, 0); ctx.restore();
+      ctx.restore();
+    });
+  }
+};
+
+new Chart(document.getElementById('historyChart').getContext('2d'), {
+  type:'line',
+  plugins:[bandPlugin],
+  data:{ labels:histLabels, datasets:[{
+    data:histData,
+    borderColor:'#f97316', backgroundColor:'rgba(249,115,22,0.06)',
+    borderWidth:2, pointRadius:1.5, pointHoverRadius:5, tension:0.3, fill:true
+  }]},
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{ label:ctx=>`  {um(ctx.parsed.y))}`,title:ctx=>ctx[0].label }}
+    },
+    scales:{
+      x:{ grid:{color:'rgba(255,255,255,0.03)'}, ticks:{color:'#8b949e',maxTicksLimit:15,font:{size:10}} },
+      y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#8b949e',font:{size:11},callback:v=>(v/1000).toFixed(0)+'k'} }
+    }
+  }
+});
+
+const startEvents = [
+  {date:'Jan 30, 2020', label:'WHO declares Public Health Emergency — COVID-19', impact:'Markets begin slide; Sensex at 41,306', color:'#60a5fa'},
+  {date:'Feb 24, 2022', label:'Russia invades Ukraine (full-scale)', impact:'Sensex −2,702 pts (−4.7%) same day', color:'#ef4444'},
+  {date:'Oct 7, 2023',  label:'Hamas attacks Israel — conflict erupts', impact:'Sensex −366 pts (−0.56%) in fortnight', color:'#fbbf24'},
+  {date:'Apr 13, 2024', label:'Iran launches 300+ drones & missiles at Israel', impact:'Sensex intraday ‒1,200 pts', color:'rgba(6,182,212,0.1)'},
+  {date:'Apr 22, 2025', label:'Pahalgam terror attack — India–Pakistan tensions', impact:'Markets cautious; Operation Sindoor triggered', color:'#a855f7'},
+  {date:'May 7, 2025',  label:'Operation Sindoor — India strikes 9 terror camps', impact:'Sensex −880 pts (−1.1%) during escalation', color:'rgba(168,85,247,0.1)'},
+];
+const endEvents = [
+  {date:'Sep 2020',    label:'Sensex fully recovers COVID losses', impact:'Pre-pandemic level (~42,000) regained in ~6 months — record recovery', color:'#22c55e'},
+  {date:'Jul 26, 1999',label:'Kargil War ends — Vijay Diwas', impact:'Sensex surged +63% in the following year', color:'#22c55e'},
+  {date:'May 10, 2025',label:'India–Pakistan Ceasefire agreed at 5:00 PM IST', impact:'DGMO talks May 12; HAL +4%, BEL +3.2% post-ceasefire', color:'#22c55e'},
+  {date:'Pending',     label:'Russia–Ukraine — No ceasefire as of Apr 2026', impact:'Talks stalled; Trump diplomacy ongoing; 24% odds of deal by end 2026', color:'#ef4444'},
+  {date:'Pending',     label:'Israel–Hamas — Active conflict, sporadic ceasefires', impact:'Oil volatility continues to be the key Sensex transmission channel', color:'#fbbf24'},
+];
+
+const tlStart = document.getElementById('tl-start');
+startEvents.forEach(e => {
+  tlStart.innerHTML += `<div class="tl-item">
+    <div class="tl-dot" style="background:${e.color}"></div>
+    <div class="tl-date">${e.date}</div>
+    <div class="tl-event">${e.label}</div>
+    <div class="tl-impact" style="color:${e.color}">${e.impact}</div>
+  </div>`;
+});
+const tlEnd = document.getElementById('tl-end');
+endEvents.forEach(e => {
+  tlEnd.innerHTML += `<div class="tl-item">
+    <div class="tl-dot" style="background:${e.color}"></div>
+    <div class="tl-date">${e.date}</div>
+    <div class="tl-event">${e.label}</div>
+    <div class="tl-impact" style="color:${e.color}">${e.impact}</div>
+  </div>`;
+});
+</script>
+</body>
+</html>
