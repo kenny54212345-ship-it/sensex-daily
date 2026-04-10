@@ -3,130 +3,171 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BSE Sensex — Daily</title>
+<title>BSE Sensex — Market Monitor</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:28px 32px;max-width:480px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.index-name{font-size:13px;font-weight:600;color:#8b949e;letter-spacing:.5px;text-transform:uppercase}
-.fetch-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:2px 9px;font-size:10px;color:#f97316;font-weight:600;white-space:nowrap}
-.fetch-dot{width:6px;height:6px;border-radius:50%;background:#3fb950;flex-shrink:0;animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.price-row{display:flex;align-items:flex-end;gap:16px;margin-bottom:8px}
-.price{font-size:42px;font-weight:700;letter-spacing:-1px;line-height:1}
-.change-block{padding-bottom:6px}
-.change{font-size:18px;font-weight:600;color:#3fb950}
-.change-pct{font-size:13px;font-weight:600;color:#3fb950;background:rgba(61,185,80,.12);border-radius:6px;padding:2px 7px;display:inline-block;margin-top:3px}
-.sub{color:#8b949e;font-size:12px;margin-bottom:20px}
-.divider{border:none;border-top:1px solid #21262d;margin:16px 0}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
-.metric{background:#0d1117;border-radius:10px;padding:10px 14px}
-.metric-label{font-size:10px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.metric-value{font-size:16px;font-weight:600;color:#e6edf3}
-.range-section{margin-bottom:14px}
-.range-label{font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;justify-content:space-between}
-.range-bar{height:6px;background:#21262d;border-radius:3px;position:relative;margin-bottom:3px}
-.range-dot{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;background:#3fb950;border:2px solid #161b22;transform:translateX(-50%);box-shadow:0 0 6px #3fb95055}
-.range-vals{display:flex;justify-content:space-between;font-size:11px;color:#8b949e}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding:24px 20px}
+.container{max-width:580px;margin:0 auto}
+.card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:24px 28px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.index-name{font-size:12px;font-weight:700;color:#8b949e;letter-spacing:.6px;text-transform:uppercase}
+.mkt-badge{display:inline-flex;align-items:center;gap:5px;border-radius:10px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:.3px;transition:all .3s}
+.mkt-open{background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.3);color:#3fb950}
+.mkt-closed{background:rgba(110,118,129,.1);border:1px solid rgba(110,118,129,.25);color:#6e7681}
+.mkt-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.mkt-open .mkt-dot{background:#3fb950;animation:blink 1.5s ease-in-out infinite}
+.mkt-closed .mkt-dot{background:#6e7681}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.price-row{display:flex;align-items:flex-end;gap:14px;margin-bottom:6px}
+.price{font-size:44px;font-weight:700;letter-spacing:-1.5px;line-height:1;border-radius:8px;padding:2px 4px;margin:-2px -4px}
+.change-block{padding-bottom:5px}
+.change{font-size:17px;font-weight:600}
+.change-pct{font-size:13px;font-weight:600;border-radius:6px;padding:2px 7px;display:inline-block;margin-top:3px}
+.up{color:#3fb950}.up-bg{background:rgba(63,185,80,.12)}
+.dn{color:#f85149}.dn-bg{background:rgba(248,81,73,.12)}
+@keyframes flashUp{0%{background:rgba(63,185,80,.35);color:#3fb950}100%{background:transparent;color:#e6edf3}}
+@keyframes flashDn{0%{background:rgba(248,81,73,.35);color:#f85149}100%{background:transparent;color:#e6edf3}}
+.flash-up{animation:flashUp .8s ease-out forwards}
+.flash-dn{animation:flashDn .8s ease-out forwards}
+.sub{color:#8b949e;font-size:11px;margin-bottom:18px;display:flex;align-items:center;gap:6px}
+.fetch-time{margin-left:auto;font-size:10px;color:#6e7681}
+hr{border:none;border-top:1px solid #21262d;margin:14px 0}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.metric{background:#0d1117;border-radius:10px;padding:9px 12px}
+.metric-label{font-size:9px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.metric-value{font-size:14px;font-weight:600}
+.range-section{margin-bottom:12px}
+.range-label{font-size:10px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;justify-content:space-between}
+.range-bar{height:5px;background:#21262d;border-radius:3px;position:relative;margin-bottom:5px}
+.range-dot{position:absolute;top:-3.5px;width:12px;height:12px;border-radius:50%;border:2px solid #161b22;transform:translateX(-50%);transition:left .5s ease}
+.range-vals{display:flex;justify-content:space-between;font-size:10px;color:#6e7681}
 .spark-row{display:flex;align-items:center;justify-content:space-between}
-.spark-label{font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.4px}
-a.yahoo-link{font-size:11px;color:#388bfd;text-decoration:none;opacity:.7}
+.spark-label{font-size:10px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.5px}
+a.yahoo-link{font-size:10px;color:#388bfd;text-decoration:none;opacity:.7}
 a.yahoo-link:hover{opacity:1}
+.section-title{font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:#21262d}
+.event{display:flex;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #21262d}
+.event:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.event-icon{font-size:18px;flex-shrink:0;width:36px;height:36px;background:#0d1117;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.event-body{flex:1;min-width:0}
+.event-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
+.event-name{font-size:13px;font-weight:600;line-height:1.3}
+.status-badge{flex-shrink:0;font-size:9px;font-weight:700;border-radius:8px;padding:2px 7px;letter-spacing:.3px;white-space:nowrap}
+.status-active{background:rgba(248,81,73,.15);color:#f85149;border:1px solid rgba(248,81,73,.3)}
+.status-ceasefire{background:rgba(227,179,65,.15);color:#e3b341;border:1px solid rgba(227,179,65,.3)}
+.status-resolved{background:rgba(63,185,80,.15);color:#3fb950;border:1px solid rgba(63,185,80,.3)}
+.event-dates{font-size:10px;color:#6e7681;margin-bottom:5px}
+.event-impact{font-size:11px;color:#8b949e;line-height:1.5}
+.event-effect{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;margin-top:5px}
+.effect-neg{color:#f85149}.effect-pos{color:#3fb950}.effect-mix{color:#e3b341}
+.refresh-row{text-align:center;font-size:10px;color:#484f58;margin-top:4px;padding-bottom:8px}
 </style>
 </head>
 <body>
+<div class="container">
 <div class="card">
   <div class="header">
     <div class="index-name">BSE SENSEX &nbsp;·&nbsp; <span style="color:#58a6ff">^BSESN</span></div>
-    <div class="fetch-badge"><span class="fetch-dot"></span><span id="fetchTimeLbl">Updated —</span></div>
+    <div class="mkt-badge mkt-closed" id="mktBadge"><span class="mkt-dot"></span><span id="mktLabel">Checking…</span></div>
   </div>
-
   <div class="price-row">
-    <div class="price">77,550.25</div>
+    <div class="price" id="elPrice">—</div>
     <div class="change-block">
-      <div class="change">▲ 3,443.40</div>
-      <div class="change-pct">+4.65%</div>
+      <div class="change" id="elChg">—</div>
+      <div class="change-pct" id="elPct">—</div>
     </div>
   </div>
-  <div class="sub">INR &nbsp;·&nbsp; BSE &nbsp;·&nbsp; Data via Yahoo Finance &nbsp;·&nbsp; 2026-04-10</div>
-
-  <hr class="divider">
-
+  <div class="sub"><span>INR · BSE · Yahoo Finance</span><span class="fetch-time" id="elFetchTime"></span></div>
+  <hr>
   <div class="metrics">
-    <div class="metric">
-      <div class="metric-label">Open</div>
-      <div class="metric-value">—</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Prev Close</div>
-      <div class="metric-value">74,106.85</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Day High</div>
-      <div class="metric-value" style="color:#3fb950">77,622.50</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Day Low</div>
-      <div class="metric-value" style="color:#f85149">76,851.16</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">52W High</div>
-      <div class="metric-value">86,159.02</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">52W Low</div>
-      <div class="metric-value">71,545.81</div>
-    </div>
-    <div class="metric" style="grid-column:span 2">
-      <div class="metric-label">Volume</div>
-      <div class="metric-value">N/A</div>
-    </div>
+    <div class="metric"><div class="metric-label">Prev Close</div><div class="metric-value" id="elPrev">—</div></div>
+    <div class="metric"><div class="metric-label">Day High</div><div class="metric-value up" id="elHi">—</div></div>
+    <div class="metric"><div class="metric-label">Day Low</div><div class="metric-value dn" id="elLo">—</div></div>
+    <div class="metric"><div class="metric-label">52W High</div><div class="metric-value" id="elW52h">—</div></div>
+    <div class="metric"><div class="metric-label">52W Low</div><div class="metric-value" id="elW52l">—</div></div>
+    <div class="metric"><div class="metric-label">Volume</div><div class="metric-value" id="elVol">—</div></div>
   </div>
-
   <div class="range-section">
-    <div class="range-label"><span>Day Range</span><span>76,851.16 – 77,622.50</span></div>
-    <div class="range-bar">
-      <div class="range-dot" style="left:90.6%"></div>
-    </div>
-    <div class="range-vals"><span>76,851.16</span><span>77,622.50</span></div>
+    <div class="range-label"><span>Day Range</span><span id="elDayRangeLabel">—</span></div>
+    <div class="range-bar"><div class="range-dot" id="elDayDot" style="left:50%;background:#30363d"></div></div>
+    <div class="range-vals"><span id="elDayLo">—</span><span id="elDayHi">—</span></div>
   </div>
-
   <div class="range-section">
-    <div class="range-label"><span>52-Week Range</span><span>71,545.81 – 86,159.02</span></div>
-    <div class="range-bar">
-      <div class="range-dot" style="left:41.1%"></div>
-    </div>
-    <div class="range-vals"><span>71,545.81</span><span>86,159.02</span></div>
+    <div class="range-label"><span>52-Week Range</span><span id="el52wRangeLabel">—</span></div>
+    <div class="range-bar"><div class="range-dot" id="el52wDot" style="left:50%;background:#30363d"></div></div>
+    <div class="range-vals"><span id="el52wLo">—</span><span id="el52wHi">—</span></div>
   </div>
-
-  <hr class="divider">
-
+  <hr>
   <div class="spark-row">
     <div class="spark-label">5-Day Trend</div>
-    <svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3fb950" stop-opacity="0.3"/><stop offset="100%" stop-color="#3fb950" stop-opacity="0"/></linearGradient></defs><polygon points="0,40 0.0,36.7 30.0,31.8 60.0,3.3 90.0,12.3 120.0,3.5 120,40" fill="url(#sg)"/><polyline points="0.0,36.7 30.0,31.8 60.0,3.3 90.0,12.3 120.0,3.5" fill="none" stroke="#3fb950" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+    <div id="elSpark"></div>
     <a href="https://sg.finance.yahoo.com/quote/%5EBSESN/" class="yahoo-link" target="_blank">Yahoo Finance ↗</a>
   </div>
 </div>
-
+<div class="card">
+  <div class="section-title">Market-Moving Events</div>
+  <div id="eventsContainer"></div>
+</div>
+<div class="refresh-row" id="refreshRow">Loading…</div>
+</div>
 <script>
-var FETCH_TS = "2026-04-10T12:12:07Z";
-(function tickTimer(){
-  var el = document.getElementById('fetchTimeLbl');
-  if (!el) return;
-  var fetched = new Date(FETCH_TS);
-  var sgtMs = fetched.getTime() + 8 * 60 * 60000;
-  var sgtDate = new Date(sgtMs);
-  var hh = sgtDate.getUTCHours(), mm = sgtDate.getUTCMinutes();
-  var ap = hh >= 12 ? 'PM' : 'AM';
-  hh = hh % 12 || 12;
-  var timeStr = hh + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ap + ' SGT';
-  var diffMin = Math.floor((Date.now() - fetched.getTime()) / 60000);
-  var h = Math.floor(diffMin / 60), m = diffMin % 60;
-  var ago = h > 0 ? h + 'h ' + m + 'm ago' : (m > 0 ? m + 'm ago' : 'just now');
-  el.textContent = 'Updated ' + timeStr + ' · ' + ago;
-  setTimeout(tickTimer, 60000);
+var EVENTS=[
+  {name:"US Trade War & Global Tariffs",icon:"⚖️",start:"Jan 20, 2025",end:null,status:"active",statusLabel:"Ongoing",impact:"Trump's 'Liberation Day' (Apr 2, 2025) imposed 26% tariffs on Indian exports. Global selloff pushed Sensex down ~8% in April 2025. A 90-day pause eased short-term pressure but uncertainty remains high.",effect:"negative"},
+  {name:"India–Pakistan Military Tensions",icon:"🛡️",start:"Apr 22, 2025",end:"May 10, 2025",status:"ceasefire",statusLabel:"Ceasefire",impact:"Pahalgam terror attack (Apr 22) killed 26 tourists. India launched Operation Sindoor (May 7), striking 9 terror targets in Pakistan/PoK. Ceasefire declared May 10. Markets were volatile during the standoff and recovered post-ceasefire.",effect:"negative"},
+  {name:"Israel–Hamas War",icon:"🔥",start:"Oct 7, 2023",end:null,status:"active",statusLabel:"Ongoing",impact:"Hamas attack on Israel triggered full-scale IDF offensive in Gaza. Elevated oil prices raised India's import bill and CPI. Sensex fell ~2% at outbreak before recovering; sustained commodity inflation remains a headwind.",effect:"negative"},
+  {name:"Russia–Ukraine War",icon:"⚔️",start:"Feb 24, 2022",end:null,status:"active",statusLabel:"Ongoing",impact:"Russia's full-scale invasion drove Brent crude to $130/bbl, spiking India's energy import costs. FII outflows intensified. Sensex shed ~6% in Feb–Mar 2022. Commodity inflation and supply chain disruptions persisted.",effect:"negative"},
+  {name:"India General Elections 2024",icon:"🗳️",start:"Apr 19, 2024",end:"Jun 4, 2024",status:"resolved",statusLabel:"Resolved",impact:"BJP-led NDA retained power but fell short of solo majority. Results day (Jun 4) triggered a −4.7% single-day crash — Sensex's worst day in years — as exit poll predictions missed badly. Markets fully recovered within three weeks.",effect:"mixed"},
+  {name:"COVID-19 Pandemic",icon:"🦠",start:"Jan 30, 2020",end:"May 5, 2023",status:"resolved",statusLabel:"Resolved",impact:"WHO emergency declaration sent Sensex crashing 38% in Q1 2020. Nationwide lockdowns froze economic activity. Historic fiscal stimulus drove a V-shaped recovery; Sensex doubled from lows by late 2020.",effect:"negative"}
+];
+(function(){
+  var el=document.getElementById('eventsContainer');
+  el.innerHTML=EVENTS.map(function(e){
+    var endStr=e.end||'Present';
+    var sCls=e.status==='active'?'status-active':e.status==='ceasefire'?'status-ceasefire':'status-resolved';
+    var effIcon=e.effect==='negative'?'▼ Bearish pressure':e.effect==='positive'?'▲ Bullish catalyst':'◆ Mixed impact';
+    var effCls=e.effect==='negative'?'effect-neg':e.effect==='positive'?'effect-pos':'effect-mix';
+    return '<div class="event"><div class="event-icon">'+e.icon+'</div><div class="event-body">'
+      +'<div class="event-header"><div class="event-name">'+e.name+'</div><span class="status-badge '+sCls+'">'+e.statusLabel+'</span></div>'
+      +'<div class="event-dates">'+e.start+' → '+endStr+'</div>'
+      +'<div class="event-impact">'+e.impact+'</div>'
+      +'<div class="event-effect '+effCls+'">'+effIcon+'</div>'
+      +'</div></div>';
+  }).join('');
 })();
+function isMarketOpen(){var now=new Date(),istMs=now.getTime()+(5*60+30)*60000,ist=new Date(istMs),day=ist.getUTCDay();if(day===0||day===6)return false;var mins=ist.getUTCHours()*60+ist.getUTCMinutes();return mins>=9*60+15&&mins<15*60+30;}
+function updateMarketBadge(){var open=isMarketOpen(),badge=document.getElementById('mktBadge'),label=document.getElementById('mktLabel');badge.className='mkt-badge '+(open?'mkt-open':'mkt-closed');label.textContent=open?'Market Open':'Market Closed';}
+function fmtNum(n){return n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmtVol(n){if(!n||n===0)return'—';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return String(Math.round(n))}
+function pctPos(v,lo,hi){var r=hi-lo;if(r===0)return 50;return Math.max(2,Math.min(98,(v-lo)/r*100)).toFixed(1)}
+function buildSpark(hist,clr){if(!hist||hist.length<2)return'';var W=100,H=36,mn=Math.min.apply(null,hist),mx=Math.max.apply(null,hist),pad=(mx-mn)*.15||50;mn-=pad;mx+=pad;var pts=hist.map(function(v,i){return(i/(hist.length-1)*W).toFixed(1)+','+(((1-(v-mn)/(mx-mn))*H)).toFixed(1)});var poly=pts.join(' '),fill='0,'+H+' '+poly+' '+W+','+H;return'<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+clr+'" stop-opacity="0.3"/><stop offset="100%" stop-color="'+clr+'" stop-opacity="0"/></linearGradient></defs><polygon points="'+fill+'" fill="url(#sg)"/><polyline points="'+poly+'" fill="none" stroke="'+clr+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>';}
+var lastPrice=null,lastFetch=null,_timer=null;
+function flashPrice(up){var el=document.getElementById('elPrice');el.classList.remove('flash-up','flash-dn');void el.offsetWidth;el.classList.add(up?'flash-up':'flash-dn');}
+function updateFetchTime(){if(!lastFetch)return;var d=Math.floor((Date.now()-lastFetch.getTime())/60000);document.getElementById('elFetchTime').textContent='Updated '+(d<1?'just now':d+'m ago');}
+setInterval(updateFetchTime,15000);setInterval(updateMarketBadge,60000);
+function updateUI(data){
+  var result=data.chart.result[0],meta=result.meta,closesRaw=result.indicators.quote[0].close;
+  var hist=closesRaw.filter(function(c){return c!==null}).slice(-5).map(function(c){return Math.round(c*100)/100});
+  var price=meta.regularMarketPrice,prev=hist.length>=2?hist[hist.length-2]:meta.chartPreviousClose;
+  var hi=meta.regularMarketDayHigh,lo=meta.regularMarketDayLow,w52h=meta.fiftyTwoWeekHigh,w52l=meta.fiftyTwoWeekLow,vol=meta.regularMarketVolume;
+  var chg=price-prev,pct=chg/prev*100,up=chg>=0,clr=up?'#3fb950':'#f85149',arrow=up?'▲':'▼',sign=up?'+':'';
+  if(lastPrice!==null&&price!==lastPrice)flashPrice(price>lastPrice);
+  lastPrice=price;
+  document.getElementById('elPrice').textContent=fmtNum(price);
+  var ec=document.getElementById('elChg');ec.textContent=arrow+' '+fmtNum(Math.abs(chg));ec.className='change '+(up?'up':'dn');
+  var ep=document.getElementById('elPct');ep.textContent=sign+pct.toFixed(2)+'%';ep.className='change-pct '+(up?'up up-bg':'dn dn-bg');
+  document.getElementById('elPrev').textContent=fmtNum(prev);document.getElementById('elHi').textContent=fmtNum(hi);document.getElementById('elLo').textContent=fmtNum(lo);document.getElementById('elW52h').textContent=fmtNum(w52h);document.getElementById('elW52l').textContent=fmtNum(w52l);document.getElementById('elVol').textContent=fmtVol(vol);
+  var dp=pctPos(price,lo,hi);document.getElementById('elDayRangeLabel').textContent=fmtNum(lo)+' – '+fmtNum(hi);var dd=document.getElementById('elDayDot');dd.style.left=dp+'%';dd.style.background=clr;dd.style.boxShadow='0 0 8px '+clr+'99';document.getElementById('elDayLo').textContent=fmtNum(lo);document.getElementById('elDayHi').textContent=fmtNum(hi);
+  var wp=pctPos(price,w52l,w52h);document.getElementById('el52wRangeLabel').textContent=fmtNum(w52l)+' – '+fmtNum(w52h);var wd=document.getElementById('el52wDot');wd.style.left=wp+'%';wd.style.background=clr;wd.style.boxShadow='0 0 8px '+clr+'99';document.getElementById('el52wLo').textContent=fmtNum(w52l);document.getElementById('el52wHi').textContent=fmtNum(w52h);
+  document.getElementById('elSpark').innerHTML=buildSpark(hist,clr);
+  lastFetch=new Date();updateFetchTime();
+  var open=isMarketOpen();document.getElementById('refreshRow').textContent=open?'● Market open — refreshing every 15 seconds':'Market closed — showing last known price · Refreshes at open';
+}
+function scheduleNext(){if(_timer)clearTimeout(_timer);_timer=setTimeout(fetchData,isMarketOpen()?15000:5*60*1000);}
+function fetchData(){
+  fetch('/api/sensex').then(function(r){return r.json()}).then(function(d){updateUI(d);updateMarketBadge();scheduleNext();}).catch(function(e){console.error(e);document.getElementById('refreshRow').textContent='Fetch failed — retrying in 30s';_timer=setTimeout(fetchData,30000);});
+}
+updateMarketBadge();fetchData();
 </script>
 </body>
 </html>
