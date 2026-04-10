@@ -7,13 +7,13 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding:24px 20px}
-.container{max-width:580px;margin:0 auto}
+.container{max-width:600px;margin:0 auto}
 .card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:24px 28px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .index-name{font-size:12px;font-weight:700;color:#8b949e;letter-spacing:.6px;text-transform:uppercase}
-.mkt-badge{display:inline-flex;align-items:center;gap:5px;border-radius:10px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:.3px;transition:all .3s}
+.mkt-badge{display:inline-flex;align-items:center;gap:5px;border-radius:10px;padding:3px 9px;font-size:10px;font-weight:700;transition:all .3s}
 .mkt-open{background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.3);color:#3fb950}
-.mkt-closed{background:rgba(110,118,129,.1);border:1px solid rgba(110,118,129,.25);color:#6e7681}
+.mkt-closed{background:rgba(110,118,129,.1);border:1px solid rgba(110,118,129,.2);color:#6e7681}
 .mkt-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .mkt-open .mkt-dot{background:#3fb950;animation:blink 1.5s ease-in-out infinite}
 .mkt-closed .mkt-dot{background:#6e7681}
@@ -45,10 +45,12 @@ hr{border:none;border-top:1px solid #21262d;margin:14px 0}
 .spark-label{font-size:10px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.5px}
 a.yahoo-link{font-size:10px;color:#388bfd;text-decoration:none;opacity:.7}
 a.yahoo-link:hover{opacity:1}
+/* Events */
 .section-title{font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .section-title::after{content:'';flex:1;height:1px;background:#21262d}
-.event{display:flex;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #21262d}
+.event{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #21262d}
 .event:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.event-top{display:flex;gap:12px}
 .event-icon{font-size:18px;flex-shrink:0;width:36px;height:36px;background:#0d1117;border-radius:10px;display:flex;align-items:center;justify-content:center}
 .event-body{flex:1;min-width:0}
 .event-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
@@ -58,14 +60,25 @@ a.yahoo-link:hover{opacity:1}
 .status-ceasefire{background:rgba(227,179,65,.15);color:#e3b341;border:1px solid rgba(227,179,65,.3)}
 .status-resolved{background:rgba(63,185,80,.15);color:#3fb950;border:1px solid rgba(63,185,80,.3)}
 .event-dates{font-size:10px;color:#6e7681;margin-bottom:5px}
-.event-impact{font-size:11px;color:#8b949e;line-height:1.5}
-.event-effect{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;margin-top:5px}
+.event-impact{font-size:11px;color:#8b949e;line-height:1.5;margin-bottom:5px}
+.event-effect{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600}
 .effect-neg{color:#f85149}.effect-pos{color:#3fb950}.effect-mix{color:#e3b341}
+/* Historical analysis panel */
+.hist-panel{margin-top:10px;background:#0d1117;border-radius:10px;padding:10px 12px}
+.hist-loading{font-size:10px;color:#484f58;text-align:center;padding:8px 0}
+.hist-row{display:flex;align-items:center;gap:14px}
+.hist-stats{display:flex;gap:16px;flex-wrap:wrap;flex:1}
+.hist-stat{display:flex;flex-direction:column}
+.hist-lbl{font-size:9px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.hist-val{font-size:13px;font-weight:700}
+.hist-note{font-size:10px;color:#6e7681;margin-top:6px;padding-top:6px;border-top:1px solid #21262d}
 .refresh-row{text-align:center;font-size:10px;color:#484f58;margin-top:4px;padding-bottom:8px}
 </style>
 </head>
 <body>
 <div class="container">
+
+<!-- PRICE CARD -->
 <div class="card">
   <div class="header">
     <div class="index-name">BSE SENSEX &nbsp;·&nbsp; <span style="color:#58a6ff">^BSESN</span></div>
@@ -89,12 +102,12 @@ a.yahoo-link:hover{opacity:1}
     <div class="metric"><div class="metric-label">Volume</div><div class="metric-value" id="elVol">—</div></div>
   </div>
   <div class="range-section">
-    <div class="range-label"><span>Day Range</span><span id="elDayRangeLabel">—</span></div>
+    <div class="range-label"><span>Day Range</span><span id="elDayRng">—</span></div>
     <div class="range-bar"><div class="range-dot" id="elDayDot" style="left:50%;background:#30363d"></div></div>
     <div class="range-vals"><span id="elDayLo">—</span><span id="elDayHi">—</span></div>
   </div>
   <div class="range-section">
-    <div class="range-label"><span>52-Week Range</span><span id="el52wRangeLabel">—</span></div>
+    <div class="range-label"><span>52-Week Range</span><span id="el52wRng">—</span></div>
     <div class="range-bar"><div class="range-dot" id="el52wDot" style="left:50%;background:#30363d"></div></div>
     <div class="range-vals"><span id="el52wLo">—</span><span id="el52wHi">—</span></div>
   </div>
@@ -105,49 +118,133 @@ a.yahoo-link:hover{opacity:1}
     <a href="https://sg.finance.yahoo.com/quote/%5EBSESN/" class="yahoo-link" target="_blank">Yahoo Finance ↗</a>
   </div>
 </div>
+
+<!-- EVENTS CARD -->
 <div class="card">
-  <div class="section-title">Market-Moving Events</div>
+  <div class="section-title">Market-Moving Events & Sensex Impact</div>
   <div id="eventsContainer"></div>
 </div>
+
 <div class="refresh-row" id="refreshRow">Loading…</div>
 </div>
+
 <script>
+var now = Math.floor(Date.now()/1000);
 var EVENTS=[
-  {name:"US Trade War & Global Tariffs",icon:"⚖️",start:"Jan 20, 2025",end:null,status:"active",statusLabel:"Ongoing",impact:"Trump's 'Liberation Day' (Apr 2, 2025) imposed 26% tariffs on Indian exports. Global selloff pushed Sensex down ~8% in April 2025. A 90-day pause eased short-term pressure but uncertainty remains high.",effect:"negative"},
-  {name:"India–Pakistan Military Tensions",icon:"🛡️",start:"Apr 22, 2025",end:"May 10, 2025",status:"ceasefire",statusLabel:"Ceasefire",impact:"Pahalgam terror attack (Apr 22) killed 26 tourists. India launched Operation Sindoor (May 7), striking 9 terror targets in Pakistan/PoK. Ceasefire declared May 10. Markets were volatile during the standoff and recovered post-ceasefire.",effect:"negative"},
-  {name:"Israel–Hamas War",icon:"🔥",start:"Oct 7, 2023",end:null,status:"active",statusLabel:"Ongoing",impact:"Hamas attack on Israel triggered full-scale IDF offensive in Gaza. Elevated oil prices raised India's import bill and CPI. Sensex fell ~2% at outbreak before recovering; sustained commodity inflation remains a headwind.",effect:"negative"},
-  {name:"Russia–Ukraine War",icon:"⚔️",start:"Feb 24, 2022",end:null,status:"active",statusLabel:"Ongoing",impact:"Russia's full-scale invasion drove Brent crude to $130/bbl, spiking India's energy import costs. FII outflows intensified. Sensex shed ~6% in Feb–Mar 2022. Commodity inflation and supply chain disruptions persisted.",effect:"negative"},
-  {name:"India General Elections 2024",icon:"🗳️",start:"Apr 19, 2024",end:"Jun 4, 2024",status:"resolved",statusLabel:"Resolved",impact:"BJP-led NDA retained power but fell short of solo majority. Results day (Jun 4) triggered a −4.7% single-day crash — Sensex's worst day in years — as exit poll predictions missed badly. Markets fully recovered within three weeks.",effect:"mixed"},
-  {name:"COVID-19 Pandemic",icon:"🦠",start:"Jan 30, 2020",end:"May 5, 2023",status:"resolved",statusLabel:"Resolved",impact:"WHO emergency declaration sent Sensex crashing 38% in Q1 2020. Nationwide lockdowns froze economic activity. Historic fiscal stimulus drove a V-shaped recovery; Sensex doubled from lows by late 2020.",effect:"negative"}
+  {name:"US Trade War & Global Tariffs",icon:"⚖️",start:"Jan 20, 2025",end:null,status:"active",statusLabel:"Ongoing",
+   impact:"Trump's 'Liberation Day' (Apr 2, 2025) imposed 26% tariffs on Indian goods. Global selloff pushed Sensex down sharply in April. A 90-day pause eased pressure but uncertainty persists.",
+   effect:"negative",p1:1735689600,p2:now,iv:"1wk"},
+  {name:"India–Pakistan Military Tensions",icon:"🛡️",start:"Apr 22, 2025",end:"May 10, 2025",status:"ceasefire",statusLabel:"Ceasefire",
+   impact:"Pahalgam terror attack (Apr 22) killed 26 tourists. India launched Operation Sindoor (May 7), striking 9 targets in Pakistan/PoK. Ceasefire declared May 10. Markets were highly volatile and recovered post-ceasefire.",
+   effect:"negative",p1:1745280000,p2:1748476800,iv:"1d"},
+  {name:"Israel–Hamas War",icon:"🔥",start:"Oct 7, 2023",end:null,status:"active",statusLabel:"Ongoing",
+   impact:"Hamas attack on Israel triggered full-scale IDF offensive in Gaza. Elevated oil prices raised India's energy import bill. Sensex fell ~2% at outbreak before recovering; inflation remains a persistent headwind.",
+   effect:"negative",p1:1693526400,p2:1706745600,iv:"1wk"},
+  {name:"Russia–Ukraine War",icon:"⚔️",start:"Feb 24, 2022",end:null,status:"active",statusLabel:"Ongoing",
+   impact:"Russia's invasion drove Brent crude to $130/bbl, spiking India's energy import costs. FII outflows surged. Sensex fell ~6% in Feb–Mar 2022 before recovering. Commodity inflation persisted for over a year.",
+   effect:"negative",p1:1640995200,p2:1656547200,iv:"1wk"},
+  {name:"India General Elections 2024",icon:"🗳️",start:"Apr 19, 2024",end:"Jun 4, 2024",status:"resolved",statusLabel:"Resolved",
+   impact:"BJP-led NDA retained power but lost its solo majority, shocking markets that expected a landslide. Results day (Jun 4) triggered a −4.7% crash — worst single day in years. Markets fully recovered within 3 weeks.",
+   effect:"mixed",p1:1709251200,p2:1722470400,iv:"1wk"},
+  {name:"COVID-19 Pandemic",icon:"🦠",start:"Jan 30, 2020",end:"May 5, 2023",status:"resolved",statusLabel:"Resolved",
+   impact:"WHO emergency declaration sent Sensex crashing 38% in Q1 2020 — one of the steepest drops in its history. Nationwide lockdowns paralysed the economy. Historic stimulus drove a V-shaped recovery; Sensex doubled from its lows by late 2020.",
+   effect:"negative",p1:1577836800,p2:1593475200,iv:"1wk"}
 ];
+
+// Render event skeletons
 (function(){
   var el=document.getElementById('eventsContainer');
-  el.innerHTML=EVENTS.map(function(e){
+  el.innerHTML=EVENTS.map(function(e,i){
     var endStr=e.end||'Present';
     var sCls=e.status==='active'?'status-active':e.status==='ceasefire'?'status-ceasefire':'status-resolved';
     var effIcon=e.effect==='negative'?'▼ Bearish pressure':e.effect==='positive'?'▲ Bullish catalyst':'◆ Mixed impact';
     var effCls=e.effect==='negative'?'effect-neg':e.effect==='positive'?'effect-pos':'effect-mix';
-    return '<div class="event"><div class="event-icon">'+e.icon+'</div><div class="event-body">'
+    return '<div class="event">'
+      +'<div class="event-top"><div class="event-icon">'+e.icon+'</div><div class="event-body">'
       +'<div class="event-header"><div class="event-name">'+e.name+'</div><span class="status-badge '+sCls+'">'+e.statusLabel+'</span></div>'
       +'<div class="event-dates">'+e.start+' → '+endStr+'</div>'
       +'<div class="event-impact">'+e.impact+'</div>'
       +'<div class="event-effect '+effCls+'">'+effIcon+'</div>'
-      +'</div></div>';
+      +'</div></div>'
+      +'<div class="hist-panel"><div class="hist-loading" id="hist-'+i+'">Loading historical data…</div></div>'
+      +'</div>';
   }).join('');
 })();
-function isMarketOpen(){var now=new Date(),istMs=now.getTime()+(5*60+30)*60000,ist=new Date(istMs),day=ist.getUTCDay();if(day===0||day===6)return false;var mins=ist.getUTCHours()*60+ist.getUTCMinutes();return mins>=9*60+15&&mins<15*60+30;}
-function updateMarketBadge(){var open=isMarketOpen(),badge=document.getElementById('mktBadge'),label=document.getElementById('mktLabel');badge.className='mkt-badge '+(open?'mkt-open':'mkt-closed');label.textContent=open?'Market Open':'Market Closed';}
+
+// Helpers
 function fmtNum(n){return n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function fmtVol(n){if(!n||n===0)return'—';if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return String(Math.round(n))}
 function pctPos(v,lo,hi){var r=hi-lo;if(r===0)return 50;return Math.max(2,Math.min(98,(v-lo)/r*100)).toFixed(1)}
-function buildSpark(hist,clr){if(!hist||hist.length<2)return'';var W=100,H=36,mn=Math.min.apply(null,hist),mx=Math.max.apply(null,hist),pad=(mx-mn)*.15||50;mn-=pad;mx+=pad;var pts=hist.map(function(v,i){return(i/(hist.length-1)*W).toFixed(1)+','+(((1-(v-mn)/(mx-mn))*H)).toFixed(1)});var poly=pts.join(' '),fill='0,'+H+' '+poly+' '+W+','+H;return'<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+clr+'" stop-opacity="0.3"/><stop offset="100%" stop-color="'+clr+'" stop-opacity="0"/></linearGradient></defs><polygon points="'+fill+'" fill="url(#sg)"/><polyline points="'+poly+'" fill="none" stroke="'+clr+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>';}
+function buildSpark(hist,clr,W,H){
+  W=W||120;H=H||40;
+  if(!hist||hist.length<2)return'';
+  var mn=Math.min.apply(null,hist),mx=Math.max.apply(null,hist),pad=(mx-mn)*.1||100;
+  mn-=pad;mx+=pad;
+  var pts=hist.map(function(v,i){return(i/(hist.length-1)*W).toFixed(1)+','+(((1-(v-mn)/(mx-mn))*H)).toFixed(1)});
+  var poly=pts.join(' '),fill='0,'+H+' '+poly+' '+W+','+H;
+  return'<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" style="display:block">'
+    +'<defs><linearGradient id="sg'+W+'" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="'+clr+'" stop-opacity="0.25"/>'
+    +'<stop offset="100%" stop-color="'+clr+'" stop-opacity="0"/>'
+    +'</linearGradient></defs>'
+    +'<polygon points="'+fill+'" fill="url(#sg'+W+')"/>'
+    +'<polyline points="'+poly+'" fill="none" stroke="'+clr+'" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>'
+    +'</svg>';
+}
+
+// Load historical data for each event
+function loadEventHistory(ev, idx){
+  var url='/api/sensex?period1='+ev.p1+'&period2='+ev.p2+'&interval='+ev.iv;
+  fetch(url).then(function(r){return r.json()}).then(function(data){
+    var result=data.chart&&data.chart.result&&data.chart.result[0];
+    if(!result)return;
+    var raw=result.indicators.quote[0].close;
+    var closes=raw.filter(function(c){return c!==null&&c!==undefined});
+    if(closes.length<2)return;
+    var startVal=closes[0];
+    var worstVal=ev.effect==='positive'?Math.max.apply(null,closes):Math.min.apply(null,closes);
+    var endVal=closes[closes.length-1];
+    var impactPct=(worstVal-startVal)/startVal*100;
+    var recovPct=ev.status==='resolved'?(endVal-worstVal)/Math.abs(startVal-worstVal)*100:null;
+    var clr=ev.effect==='negative'?'#f85149':ev.effect==='positive'?'#3fb950':'#e3b341';
+    var impSign=impactPct>=0?'+':'';
+    var el=document.getElementById('hist-'+idx);
+    if(!el)return;
+    var recovHtml='';
+    if(recovPct!==null){
+      var rPct=Math.min(100,Math.max(0,recovPct));
+      var rClr=rPct>=100?'#3fb950':rPct>=50?'#e3b341':'#f85149';
+      recovHtml='<div class="hist-stat"><div class="hist-lbl">Recovery</div><div class="hist-val" style="color:'+rClr+'">'+rPct.toFixed(0)+'%</div></div>';
+    }
+    el.innerHTML='<div class="hist-row">'
+      +'<div>'+buildSpark(closes,clr,130,42)+'</div>'
+      +'<div class="hist-stats">'
+      +'<div class="hist-stat"><div class="hist-lbl">At Start</div><div class="hist-val">'+fmtNum(startVal)+'</div></div>'
+      +'<div class="hist-stat"><div class="hist-lbl">'+(ev.effect==='negative'?'Trough':'Peak')+'</div><div class="hist-val" style="color:'+clr+'">'+fmtNum(worstVal)+'</div></div>'
+      +'<div class="hist-stat"><div class="hist-lbl">Impact</div><div class="hist-val" style="color:'+clr+'">'+impSign+impactPct.toFixed(1)+'%</div></div>'
+      +recovHtml
+      +'</div></div>'
+      +'<div class="hist-note">'+ev.iv.replace('1wk','Weekly').replace('1d','Daily')+' data · '+closes.length+' periods · '+ev.start+(ev.end?' → '+ev.end:' → present')+'</div>';
+  }).catch(function(e){
+    var el=document.getElementById('hist-'+idx);
+    if(el)el.innerHTML='<div class="hist-loading">Historical data unavailable</div>';
+  });
+}
+EVENTS.forEach(function(ev,i){setTimeout(function(){loadEventHistory(ev,i);},i*200);});
+
+// Market hours
+function isMarketOpen(){var now=new Date(),ist=new Date(now.getTime()+(5*60+30)*60000),day=ist.getUTCDay();if(day===0||day===6)return false;var m=ist.getUTCHours()*60+ist.getUTCMinutes();return m>=9*60+15&&m<15*60+30;}
+function updateMarketBadge(){var open=isMarketOpen(),b=document.getElementById('mktBadge'),l=document.getElementById('mktLabel');b.className='mkt-badge '+(open?'mkt-open':'mkt-closed');l.textContent=open?'Market Open':'Market Closed';}
+
+// Price update
 var lastPrice=null,lastFetch=null,_timer=null;
 function flashPrice(up){var el=document.getElementById('elPrice');el.classList.remove('flash-up','flash-dn');void el.offsetWidth;el.classList.add(up?'flash-up':'flash-dn');}
 function updateFetchTime(){if(!lastFetch)return;var d=Math.floor((Date.now()-lastFetch.getTime())/60000);document.getElementById('elFetchTime').textContent='Updated '+(d<1?'just now':d+'m ago');}
 setInterval(updateFetchTime,15000);setInterval(updateMarketBadge,60000);
+
 function updateUI(data){
-  var result=data.chart.result[0],meta=result.meta,closesRaw=result.indicators.quote[0].close;
-  var hist=closesRaw.filter(function(c){return c!==null}).slice(-5).map(function(c){return Math.round(c*100)/100});
+  var result=data.chart.result[0],meta=result.meta,raw=result.indicators.quote[0].close;
+  var hist=raw.filter(function(c){return c!==null}).slice(-5).map(function(c){return Math.round(c*100)/100});
   var price=meta.regularMarketPrice,prev=hist.length>=2?hist[hist.length-2]:meta.chartPreviousClose;
   var hi=meta.regularMarketDayHigh,lo=meta.regularMarketDayLow,w52h=meta.fiftyTwoWeekHigh,w52l=meta.fiftyTwoWeekLow,vol=meta.regularMarketVolume;
   var chg=price-prev,pct=chg/prev*100,up=chg>=0,clr=up?'#3fb950':'#f85149',arrow=up?'▲':'▼',sign=up?'+':'';
@@ -156,18 +253,36 @@ function updateUI(data){
   document.getElementById('elPrice').textContent=fmtNum(price);
   var ec=document.getElementById('elChg');ec.textContent=arrow+' '+fmtNum(Math.abs(chg));ec.className='change '+(up?'up':'dn');
   var ep=document.getElementById('elPct');ep.textContent=sign+pct.toFixed(2)+'%';ep.className='change-pct '+(up?'up up-bg':'dn dn-bg');
-  document.getElementById('elPrev').textContent=fmtNum(prev);document.getElementById('elHi').textContent=fmtNum(hi);document.getElementById('elLo').textContent=fmtNum(lo);document.getElementById('elW52h').textContent=fmtNum(w52h);document.getElementById('elW52l').textContent=fmtNum(w52l);document.getElementById('elVol').textContent=fmtVol(vol);
-  var dp=pctPos(price,lo,hi);document.getElementById('elDayRangeLabel').textContent=fmtNum(lo)+' – '+fmtNum(hi);var dd=document.getElementById('elDayDot');dd.style.left=dp+'%';dd.style.background=clr;dd.style.boxShadow='0 0 8px '+clr+'99';document.getElementById('elDayLo').textContent=fmtNum(lo);document.getElementById('elDayHi').textContent=fmtNum(hi);
-  var wp=pctPos(price,w52l,w52h);document.getElementById('el52wRangeLabel').textContent=fmtNum(w52l)+' – '+fmtNum(w52h);var wd=document.getElementById('el52wDot');wd.style.left=wp+'%';wd.style.background=clr;wd.style.boxShadow='0 0 8px '+clr+'99';document.getElementById('el52wLo').textContent=fmtNum(w52l);document.getElementById('el52wHi').textContent=fmtNum(w52h);
-  document.getElementById('elSpark').innerHTML=buildSpark(hist,clr);
+  document.getElementById('elPrev').textContent=fmtNum(prev);
+  document.getElementById('elHi').textContent=fmtNum(hi);
+  document.getElementById('elLo').textContent=fmtNum(lo);
+  document.getElementById('elW52h').textContent=fmtNum(w52h);
+  document.getElementById('elW52l').textContent=fmtNum(w52l);
+  document.getElementById('elVol').textContent=fmtVol(vol);
+  var dp=pctPos(price,lo,hi);
+  document.getElementById('elDayRng').textContent=fmtNum(lo)+' – '+fmtNum(hi);
+  var dd=document.getElementById('elDayDot');dd.style.left=dp+'%';dd.style.background=clr;dd.style.boxShadow='0 0 8px '+clr+'99';
+  document.getElementById('elDayLo').textContent=fmtNum(lo);document.getElementById('elDayHi').textContent=fmtNum(hi);
+  var wp=pctPos(price,w52l,w52h);
+  document.getElementById('el52wRng').textContent=fmtNum(w52l)+' – '+fmtNum(w52h);
+  var wd=document.getElementById('el52wDot');wd.style.left=wp+'%';wd.style.background=clr;wd.style.boxShadow='0 0 8px '+clr+'99';
+  document.getElementById('el52wLo').textContent=fmtNum(w52l);document.getElementById('el52wHi').textContent=fmtNum(w52h);
+  document.getElementById('elSpark').innerHTML=buildSpark(hist,clr,100,36);
   lastFetch=new Date();updateFetchTime();
-  var open=isMarketOpen();document.getElementById('refreshRow').textContent=open?'● Market open — refreshing every 15 seconds':'Market closed — showing last known price · Refreshes at open';
+  var open=isMarketOpen();
+  document.getElementById('refreshRow').textContent=open?'● Market open — live data, refreshing every 15s':'Market closed — last known price shown · Resumes at open 9:15 AM IST';
 }
+
 function scheduleNext(){if(_timer)clearTimeout(_timer);_timer=setTimeout(fetchData,isMarketOpen()?15000:5*60*1000);}
 function fetchData(){
-  fetch('/api/sensex').then(function(r){return r.json()}).then(function(d){updateUI(d);updateMarketBadge();scheduleNext();}).catch(function(e){console.error(e);document.getElementById('refreshRow').textContent='Fetch failed — retrying in 30s';_timer=setTimeout(fetchData,30000);});
+  fetch('/api/sensex').then(function(r){return r.json()}).then(function(d){updateUI(d);updateMarketBadge();scheduleNext();}).catch(function(e){
+    console.error('Price fetch error:',e);
+    document.getElementById('refreshRow').textContent='Connection error — retrying in 30s';
+    _timer=setTimeout(fetchData,30000);
+  });
 }
-updateMarketBadge();fetchData();
+updateMarketBadge();
+fetchData();
 </script>
 </body>
 </html>
