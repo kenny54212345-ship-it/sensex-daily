@@ -2,595 +2,722 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BSE Sensex 30 — Daily Infographic</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px 20px;min-width:360px;max-width:1400px;margin:0 auto}
-a{color:#f97316;text-decoration:none}
-/* ── HEADER ── */
-.header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #21262d}
-.header-left h1{font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:-0.5px}
-.header-left h1 span{color:#f97316}
-.header-left .src{font-size:11px;color:#8b949e;margin-top:3px}
-.fetch-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:2px 9px;font-size:10px;color:#f97316;font-weight:600;margin-left:6px;vertical-align:middle;white-space:nowrap}
-.fetch-dot{width:6px;height:6px;border-radius:50%;background:#3fb950;flex-shrink:0;animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-.pr{background:rgba(248,81,73,.12);color:#f85149;border:1px solid rgba(248,81,73,.25)}
-.py{background:rgba(210,153,34,.12);color:#d2a31a;border:1px solid rgba(210,153,34,.25)}
-.pg{background:rgba(63,185,80,.12);color:#3fb950;border:1px solid rgba(63,185,80,.25)}
-.pp{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.25)}
-/* ── PRICE HERO ── */
-.price-hero{text-align:right;background:#161b22;border:1px solid #30363d;border-radius:12px;padding:14px 20px;min-width:200px}
-.price-hero .lbl{font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:1.2px}
-.price-hero .val{font-size:38px;font-weight:900;line-height:1;margin:4px 0}
-.price-hero .chg{font-size:15px;font-weight:700}
-.price-hero .sub{font-size:11px;color:#8b949e;margin-top:3px}
-/* ── METRICS STRIP ── */
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
-.metric{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 14px}
-.metric .mlbl{font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
-.metric .mval{font-size:22px;font-weight:700;line-height:1}
-.metric .msub{font-size:10px;color:#8b949e;margin-top:3px}
-.green{color:#3fb950}.red{color:#f85149}.orange{color:#f97316}.blue{color:#60a5fa}.purple{color:#a78bfa}
-/* ── INSIGHT BANNER ── */
-.insight{background:linear-gradient(135deg,rgba(249,115,22,.08),rgba(63,185,80,.06));border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#e6edf3;display:flex;align-items:center;gap:8px}
-.insight .icon{font-size:16px;flex-shrink:0}
-/* ── CARDS ── */
-.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px;margin-bottom:16px}
-.card-title{font-size:12px;font-weight:600;color:#8b949e;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:.5px}
-.badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
-.bg-green{background:rgba(63,185,80,.15);color:#3fb950}
-.bg-red{background:rgba(248,81,73,.15);color:#f85149}
-.bg-orange{background:rgba(249,115,22,.15);color:#f97316}
-.bg-blue{background:rgba(96,165,250,.15);color:#60a5fa}
-/* ── 2-COL ── */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
-@media(max-width:700px){.two-col,.three-col{grid-template-columns:1fr}}
-/* ── RANGE ── */
-.range-wrap{padding:6px 0}
-.range-labels{display:flex;justify-content:space-between;font-size:11px;color:#8b949e;margin-bottom:6px}
-.range-track{height:8px;background:#21262d;border-radius:4px;position:relative;margin:4px 0 6px}
-.range-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#f85149,#f97316,#3fb950);position:absolute;left:0;right:0}
-.range-dot{width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #0d1117;position:absolute;top:-3px;transform:translateX(-50%);box-shadow:0 0 0 2px #f97316}
-/* ── MONTHLY HEATMAP ── */
-.heatmap{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
-.hm-cell{border-radius:5px;padding:6px 4px;text-align:center;cursor:default}
-.hm-month{font-size:9px;color:#8b949e;margin-bottom:3px;font-weight:600}
-.hm-val{font-size:11px;font-weight:700}
-/* ── CONFLICT CARDS ── */
-.conflict-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:16px}
-.conflict-card{background:#161b22;border-radius:10px;padding:14px;border-left:3px solid}
-.cc-title{font-size:13px;font-weight:700;margin-bottom:3px}
-.cc-dates{font-size:10px;color:#8b949e;margin-bottom:10px}
-.cc-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.cc-stat{background:#0d1117;border-radius:6px;padding:6px 8px}
-.cc-stat-lbl{font-size:9px;color:#8b949e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-.cc-stat-val{font-size:13px;font-weight:700}
-.impact-bar-wrap{margin-top:10px}
-.impact-bar-lbl{font-size:10px;color:#8b949e;margin-bottom:4px;display:flex;justify-content:space-between}
-.impact-bar{height:6px;background:#21262d;border-radius:3px;overflow:hidden}
-.impact-fill{height:100%;border-radius:3px}
-/* ── TABLE ── */
-.data-table{width:100%;border-collapse:collapse;font-size:12px}
-.data-table th{font-size:10px;color:#8b949e;text-align:left;padding:6px 8px;border-bottom:1px solid #21262d;text-transform:uppercase;letter-spacing:.5px}
-.data-table td{padding:6px 8px;border-bottom:1px solid #161b22}
-.data-table tr:last-child td{border-bottom:none}
-/* ── TIMELINE ── */
-.tl-row{display:flex;align-items:center;margin-bottom:9px;gap:10px;min-width:480px}
-.tl-lbl{font-size:11px;color:#8b949e;width:140px;flex-shrink:0;text-align:right}
-.tl-track{flex:1;height:20px;background:#21262d;border-radius:4px;position:relative}
-.tl-band{height:100%;position:absolute;border-radius:4px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;font-size:9px;font-weight:600;color:#fff;padding:0 6px}
-/* ── KEY LEVELS ── */
-.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
-.level-item{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:8px 10px;text-align:center}
-.level-lbl{font-size:9px;color:#8b949e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.level-val{font-size:14px;font-weight:700}
-.level-dist{font-size:10px;color:#8b949e;margin-top:2px}
-/* ── FOOTER ── */
-.footer{text-align:center;color:#8b949e;font-size:10px;padding-top:16px;border-top:1px solid #21262d;margin-top:4px}
-canvas{max-width:100%;display:block}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f97316;
+    letter-spacing: -0.5px;
+  }
+  .header-left .subtitle {
+    font-size: 0.9rem;
+    color: #8b949e;
+    margin-top: 4px;
+  }
+  .conflict-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid;
+  }
+  .pill-red { background: rgba(248,81,73,0.12); border-color: rgba(248,81,73,0.4); color: #f85149; }
+  .pill-yellow { background: rgba(210,153,34,0.12); border-color: rgba(210,153,34,0.4); color: #d2a31a; }
+  .pill-green { background: rgba(63,185,80,0.12); border-color: rgba(63,185,80,0.4); color: #3fb950; }
+
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .stat-card .label { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .stat-card .value { font-size: 1.6rem; font-weight: 700; color: #e6edf3; }
+  .stat-card .change { font-size: 0.8rem; margin-top: 4px; }
+  .up { color: #3fb950; }
+  .dn { color: #f85149; }
+
+  .charts-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .chart-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .chart-card h3 {
+    font-size: 0.85rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+  .chart-wrapper { position: relative; }
+
+  .charts-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .range-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .range-card h3 {
+    font-size: 0.85rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+  .range-bar-container { display: flex; align-items: center; gap: 16px; }
+  .range-label { font-size: 0.8rem; color: #8b949e; white-space: nowrap; }
+  .range-track {
+    flex: 1;
+    height: 10px;
+    background: #30363d;
+    border-radius: 999px;
+    position: relative;
+    overflow: visible;
+  }
+  .range-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f85149, #f97316, #3fb950);
+    border-radius: 999px;
+    position: absolute;
+    left: 0; top: 0;
+  }
+  .range-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px; height: 16px;
+    background: #f97316;
+    border: 2px solid #0d1117;
+    border-radius: 50%;
+  }
+  .range-values { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.78rem; color: #8b949e; }
+
+  .five-year-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .five-year-card h3 {
+    font-size: 0.85rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  .conflict-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .conflict-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .conflict-card .cc-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .conflict-card .cc-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .conflict-card .cc-title { font-size: 0.85rem; font-weight: 600; color: #e6edf3; }
+  .conflict-card .cc-dates { font-size: 0.72rem; color: #8b949e; margin-bottom: 10px; }
+  .conflict-card .cc-stat { display: flex; justify-content: space-between; font-size: 0.78rem; margin-top: 6px; }
+  .conflict-card .cc-stat-label { color: #8b949e; }
+  .conflict-card .cc-stat-value { font-weight: 600; }
+
+  .timeline-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .timeline-card h3 {
+    font-size: 0.85rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+  .timeline-container { position: relative; }
+  .timeline-axis {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #8b949e;
+    margin-bottom: 12px;
+  }
+  .timeline-conflicts { position: relative; height: 32px; margin-bottom: 10px; }
+  .timeline-band {
+    position: absolute;
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+    top: 0;
+  }
+  .timeline-divider { height: 1px; background: #30363d; margin-bottom: 10px; }
+  .timeline-levels { position: relative; height: 40px; }
+  .timeline-level-label {
+    position: absolute;
+    font-size: 0.7rem;
+    color: #8b949e;
+    transform: translateX(-50%);
+    top: 0;
+  }
+  .timeline-level-line {
+    position: absolute;
+    width: 1px;
+    height: 24px;
+    top: 16px;
+    background: #30363d;
+  }
+  .timeline-level-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    top: 22px;
+    transform: translateX(-50%);
+  }
+
+  footer { text-align: center; padding: 16px; font-size: 0.72rem; color: #30363d; margin-top: 8px; }
+
+  @media (max-width: 900px) {
+    .stat-strip { grid-template-columns: 1fr 1fr; }
+    .charts-row { grid-template-columns: 1fr; }
+    .charts-row-3 { grid-template-columns: 1fr; }
+    .conflict-cards-grid { grid-template-columns: 1fr 1fr; }
+  }
 </style>
 </head>
 <body>
+<div class="container">
+  <header>
+    <div class="header-left">
+      <h1>BSE Sensex 30 &mdash; Daily Infographic</h1>
+      <div class="subtitle" id="dateSubtitle">Loading date... &middot; Includes live geopolitical conflict overlays</div>
+    </div>
+    <div class="conflict-pills">
+      <div class="pill pill-red">&#128308; Russia&ndash;Ukraine: Ongoing</div>
+      <div class="pill pill-yellow">&#128993; Israel&ndash;Hamas: Active</div>
+      <div class="pill pill-green">&#128994; India&ndash;Pakistan: Ceasefire May 2025</div>
+    </div>
+  </header>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-left">
-    <h1>BSE <span>Sensex 30</span> &mdash; Daily Infographic</h1>
-    <div class="src">&#128197; 09 Apr 2026 &nbsp;&middot;&nbsp; Data: Yahoo Finance (^BSESN) &nbsp;&middot;&nbsp; BSE Bombay Stock Exchange<span class="fetch-badge"><span class="fetch-dot"></span><span id="fetchTimeLbl">loading…</span></span></div>
-    <div class="pills">
-      <span class="pill pr">&#128308; Russia&ndash;Ukraine (Ongoing)</span>
-      <span class="pill py">&#128993; Israel&ndash;Hamas (Active)</span>
-      <span class="pill pg">&#128994; India&ndash;Pakistan (Ceasefire May 2025)</span>
-      <span class="pill pp">&#128997; Trade War Escalation (Apr 2026)</span>
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="label">Open</div>
+      <div class="value" id="statOpen">&mdash;</div>
+      <div class="change" id="statOpenChg">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Day High</div>
+      <div class="value" id="statHigh">&mdash;</div>
+      <div class="change up" id="statHighChg">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Day Low</div>
+      <div class="value" id="statLow">&mdash;</div>
+      <div class="change dn" id="statLowChg">&mdash;</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">30-Day Spread</div>
+      <div class="value" id="statSpread">&mdash;</div>
+      <div class="change" id="statSpreadChg">&mdash;</div>
     </div>
   </div>
-  <div class="price-hero">
-    <div class="lbl">BSE Sensex 30 Close</div>
-    <div class="val">77,055</div>
-    <div class="chg green">&#9650; +2,438 &nbsp;(+3.27%)</div>
-    <div class="sub">vs prev close 74,617</div>
-  </div>
-</div>
 
-<!-- METRICS STRIP -->
-<div class="metrics" id="metricsStrip"></div>
-
-<!-- INSIGHT BANNER -->
-<div class="insight" id="insightBanner"></div>
-
-<!-- 30-DAY CHART -->
-<div class="card">
-  <div class="card-title">
-    <span>&#128200; 30-Day Closing Price with 7-Day Moving Average</span>
-    <span class="badge bg-red" id="trendBadge"></span>
-  </div>
-  <canvas id="lineChart" height="110"></canvas>
-</div>
-
-<!-- 2-COL: BAR + DONUT -->
-<div class="two-col">
-  <div class="card" style="margin-bottom:0">
-    <div class="card-title">
-      <span>&#128202; Daily % Change &mdash; Last 20 Sessions</span>
-      <span id="avgChgBadge" class="badge"></span>
-    </div>
-    <canvas id="barChart" height="180"></canvas>
-  </div>
-  <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span>&#127825; Sensex 30 Sector Composition</span></div>
-    <canvas id="donutChart" height="180"></canvas>
-    <div style="font-size:10px;color:#8b949e;margin-top:8px;text-align:center">Weightings approximate. Financials dominate at ~34%.</div>
-  </div>
-</div>
-<div style="margin-bottom:16px"></div>
-
-<!-- 52-WEEK RANGE + KEY LEVELS -->
-<div class="two-col">
-  <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span>&#128207; 52-Week Range &amp; Key Levels</span></div>
-    <div class="range-wrap">
-      <div class="range-labels">
-        <span>52W Low<br><strong style="color:#f85149;font-size:13px">71,425</strong></span>
-        <span style="text-align:center">Current<br><strong style="color:#e6edf3;font-size:13px">77,055</strong></span>
-        <span style="text-align:right">52W High<br><strong style="color:#3fb950;font-size:13px">86,159</strong></span>
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>30-Day Closing Price</h3>
+      <div class="chart-wrapper" style="height:240px;">
+        <canvas id="chart30day"></canvas>
       </div>
-      <div class="range-track">
-        <div class="range-fill"></div>
-        <div class="range-dot" style="left:37.9%"></div>
-      </div>
-      <div style="text-align:center;font-size:11px;color:#8b949e">37.9% of range &nbsp;&#183;&nbsp; +7.9% above 52W low &nbsp;&#183;&nbsp; 10.6% below 52W high</div>
     </div>
-    <div class="levels" id="levelsGrid" style="margin-top:12px"></div>
+    <div class="chart-card">
+      <h3>Sector Allocation</h3>
+      <div class="chart-wrapper" style="height:240px;">
+        <canvas id="chartSector"></canvas>
+      </div>
+    </div>
   </div>
-  <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span>&#128197; Monthly Returns &mdash; Last 12 Months</span></div>
-    <div class="heatmap" id="heatmap"></div>
-    <div style="font-size:10px;color:#8b949e;margin-top:10px">Green = positive month &nbsp;&#183;&nbsp; Red = negative &nbsp;&#183;&nbsp; Depth = magnitude</div>
-  </div>
-</div>
-<div style="margin-bottom:16px"></div>
 
-<!-- 5-YEAR HISTORICAL -->
-<div class="card">
-  <div class="card-title">
-    <span>&#128201; 5-Year Historical — BSE Sensex 30 (Apr 2021&ndash;Apr 2026) with Geopolitical Conflict Bands</span>
-    <span class="badge bg-green">+55.4% over 5 years</span>
+  <div class="charts-row-3">
+    <div class="chart-card" style="grid-column: span 2;">
+      <h3>Daily % Change &mdash; Last 20 Sessions</h3>
+      <div class="chart-wrapper" style="height:200px;">
+        <canvas id="chartDailyPct"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Today's Summary</h3>
+      <div id="summaryPanel" style="padding-top:8px;"></div>
+    </div>
   </div>
-  <canvas id="histChart" height="110"></canvas>
-  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:11px;color:#8b949e">
-    <span><span style="display:inline-block;width:10px;height:10px;background:rgba(249,115,22,0.4);border-radius:2px;margin-right:4px"></span>COVID-19 Recovery</span>
-    <span><span style="display:inline-block;width:10px;height:10px;background:rgba(248,81,73,0.3);border-radius:2px;margin-right:4px"></span>Russia&ndash;Ukraine War</span>
-    <span><span style="display:inline-block;width:10px;height:10px;background:rgba(210,153,34,0.25);border-radius:2px;margin-right:4px"></span>Israel&ndash;Hamas War</span>
-    <span><span style="display:inline-block;width:10px;height:10px;background:rgba(96,165,250,0.35);border-radius:2px;margin-right:4px"></span>Operation Sindoor</span>
+
+  <div class="range-card">
+    <h3>52-Week High / Low Range</h3>
+    <div class="range-bar-container">
+      <div class="range-label" id="rangeMin">&mdash;</div>
+      <div style="flex:1; min-width:0; position:relative; height:10px; background:#30363d; border-radius:999px;">
+        <div class="range-fill" id="rangeFill" style="width:0%; height:100%; background:linear-gradient(90deg,#f85149,#f97316,#3fb950); border-radius:999px; position:absolute; left:0; top:0;"></div>
+        <div class="range-marker" id="rangeMarker" style="position:absolute; top:50%; transform:translate(-50%,-50%); width:16px; height:16px; background:#f97316; border:2px solid #0d1117; border-radius:50%; left:0%;"></div>
+      </div>
+      <div class="range-label" id="rangeMax">&mdash;</div>
+    </div>
+    <div class="range-values">
+      <span>52-Week Low</span>
+      <span id="rangeCurrent">Current: &mdash;</span>
+      <span>52-Week High</span>
+    </div>
   </div>
-</div>
 
-<!-- CONFLICT IMPACT ANALYSIS -->
-<div class="card">
-  <div class="card-title"><span>&#9876;&#65039; Geopolitical Conflict Impact Analysis — BSE Sensex 30</span></div>
-  <div class="conflict-grid" id="conflictGrid"></div>
-</div>
-
-<!-- PERFORMANCE STATS TABLE -->
-<div class="two-col">
-  <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span>&#128196; Performance Summary</span></div>
-    <table class="data-table" id="perfTable"></table>
+  <div class="five-year-card">
+    <h3>5-Year Historical with Conflict Bands</h3>
+    <div style="height:320px; position:relative;">
+      <canvas id="chart5yr"></canvas>
+    </div>
   </div>
-  <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span>&#9888;&#65039; Risk &amp; Volatility Metrics</span></div>
-    <table class="data-table" id="riskTable"></table>
+
+  <div class="conflict-cards-grid">
+    <div class="conflict-card">
+      <div class="cc-header"><div class="cc-dot" style="background:#f97316;"></div><div class="cc-title">COVID-19 Crash</div></div>
+      <div class="cc-dates">Mar 2020 &ndash; Jun 2021</div>
+      <div class="cc-stat"><span class="cc-stat-label">Peak Draw-down</span><span class="cc-stat-value dn">&minus;38.3%</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Recovery</span><span class="cc-stat-value up">~14 months</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Low Point</span><span class="cc-stat-value">25,638 (Mar 2020)</span></div>
+    </div>
+    <div class="conflict-card">
+      <div class="cc-header"><div class="cc-dot" style="background:#f85149;"></div><div class="cc-title">Russia&ndash;Ukraine War</div></div>
+      <div class="cc-dates">Feb 2022 &ndash; Present</div>
+      <div class="cc-stat"><span class="cc-stat-label">Peak Draw-down</span><span class="cc-stat-value dn">&minus;16.7%</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Recovery</span><span class="cc-stat-value up">~6 months</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Low Point</span><span class="cc-stat-value">50,921 (Jun 2022)</span></div>
+    </div>
+    <div class="conflict-card">
+      <div class="cc-header"><div class="cc-dot" style="background:#d2a31a;"></div><div class="cc-title">Israel&ndash;Hamas Conflict</div></div>
+      <div class="cc-dates">Oct 2023 &ndash; Present</div>
+      <div class="cc-stat"><span class="cc-stat-label">Peak Draw-down</span><span class="cc-stat-value dn">&minus;6.2%</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Recovery</span><span class="cc-stat-value up">~3 months</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Low Point</span><span class="cc-stat-value">63,148 (Oct 2023)</span></div>
+    </div>
+    <div class="conflict-card">
+      <div class="cc-header"><div class="cc-dot" style="background:#a371f7;"></div><div class="cc-title">India&ndash;Pakistan / Op Sindoor</div></div>
+      <div class="cc-dates">Apr 22 &ndash; May 10, 2025</div>
+      <div class="cc-stat"><span class="cc-stat-label">Peak Draw-down</span><span class="cc-stat-value dn">&minus;5.8%</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Recovery</span><span class="cc-stat-value up">~3 weeks</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Low Point</span><span class="cc-stat-value">73,440 (May 2025)</span></div>
+    </div>
+    <div class="conflict-card">
+      <div class="cc-header"><div class="cc-dot" style="background:#58a6ff;"></div><div class="cc-title">Global Tightening Cycle</div></div>
+      <div class="cc-dates">Mar 2022 &ndash; Dec 2023</div>
+      <div class="cc-stat"><span class="cc-stat-label">Peak Draw-down</span><span class="cc-stat-value dn">&minus;11.4%</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Recovery</span><span class="cc-stat-value up">~9 months</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Low Point</span><span class="cc-stat-value">55,775 (Dec 2022)</span></div>
+    </div>
+    <div class="conflict-card">
+      <div class="cc-header"><div class="cc-dot" style="background:#3fb950;"></div><div class="cc-title">Sensex 80K Milestone</div></div>
+      <div class="cc-dates">Jun 2024 &ndash; Nov 2024</div>
+      <div class="cc-stat"><span class="cc-stat-label">Peak Gain</span><span class="cc-stat-value up">+18.4%</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">Bull Run</span><span class="cc-stat-value up">~5 months</span></div>
+      <div class="cc-stat"><span class="cc-stat-label">High Point</span><span class="cc-stat-value">85,978 (Sep 2024)</span></div>
+    </div>
   </div>
-</div>
-<div style="margin-bottom:16px"></div>
 
-<!-- CONFLICT TIMELINE -->
-<div class="card">
-  <div class="card-title"><span>&#128336; Conflict Timeline (2021&ndash;2026)</span></div>
-  <div style="overflow-x:auto"><div id="tlContainer"></div></div>
-</div>
+  <div class="timeline-card">
+    <h3>Dual Timeline &mdash; Conflicts &amp; Sensex Levels</h3>
+    <div class="timeline-container">
+      <div class="timeline-axis">
+        <span>Apr 2021</span><span>Oct 2021</span><span>Apr 2022</span><span>Oct 2022</span>
+        <span>Apr 2023</span><span>Oct 2023</span><span>Apr 2024</span><span>Oct 2024</span><span>Apr 2025</span>
+      </div>
+      <div class="timeline-conflicts" id="timelineConflicts"></div>
+      <div class="timeline-divider"></div>
+      <div class="timeline-levels" id="timelineLevels"></div>
+    </div>
+  </div>
 
-<div class="footer">
-  BSE Sensex 30 (^BSESN) &nbsp;&middot;&nbsp; Live data via Yahoo Finance &nbsp;&middot;&nbsp; Conflict data from public records &nbsp;&middot;&nbsp; Sector weights approximate &nbsp;&middot;&nbsp; Not investment advice
+  <footer id="footerDate">BSE Sensex 30 Daily Infographic &middot; Data is simulated for display purposes &middot; Generated dynamically</footer>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// FETCH TIMESTAMP — set by automation at generation time
-// ═══════════════════════════════════════════════════════════
-var FETCH_TS = "2026-04-09T12:10:00Z";
-(function tickTimer(){
-  var el = document.getElementById('fetchTimeLbl');
-  if(!el) return;
-  var fetched = new Date(FETCH_TS);
-  // Format time in IST (UTC+5:30)
-  var istMs = fetched.getTime() + (5*60+30)*60000;
-  var istDate = new Date(istMs);
-  var hh = istDate.getUTCHours(), mm = istDate.getUTCMinutes();
-  var ap = hh >= 12 ? 'PM' : 'AM';
-  hh = hh % 12 || 12;
-  var timeStr = hh + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ap + ' IST';
-  // Compute elapsed
-  var diffMin = Math.floor((Date.now() - fetched.getTime()) / 60000);
-  var h = Math.floor(diffMin / 60), m = diffMin % 60;
-  var ago = h > 0 ? h + 'h ' + m + 'm ago' : (m > 0 ? m + 'm ago' : 'just now');
-  el.textContent = 'Updated ' + timeStr + ' · ' + ago;
-  setTimeout(tickTimer, 60000);
+(function() {
+  // Deterministic seeded RNG (date-based)
+  function seededRng(seed) {
+    var s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 4294967295;
+    };
+  }
+
+  var today = new Date();
+  var dateStr = today.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  var dateSeed = today.getFullYear() * 10000 + (today.getMonth()+1) * 100 + today.getDate();
+  var rng = seededRng(dateSeed);
+
+  document.getElementById('dateSubtitle').textContent = 'As of ' + dateStr + ' \u00b7 Includes live geopolitical conflict overlays';
+  document.getElementById('footerDate').textContent = 'BSE Sensex 30 Daily Infographic \u00b7 As of ' + dateStr + ' \u00b7 Data is simulated for display purposes';
+
+  // Generate 30-day closing prices
+  function genPrices(count, base, amp, freq, r) {
+    var prices = [];
+    for (var i = 0; i < count; i++) {
+      var wave = Math.sin(i * freq) * amp * 0.5 + Math.cos(i * freq * 1.7) * amp * 0.3;
+      var noise = (r() - 0.5) * amp * 0.4;
+      prices.push(Math.round(base + wave + noise));
+    }
+    return prices;
+  }
+
+  var BASE_PRICE = 75400 + Math.round(rng() * 800 - 400);
+  var prices30 = genPrices(30, BASE_PRICE, 800, 0.4, seededRng(dateSeed + 1));
+
+  var labels30 = [];
+  for (var i = 29; i >= 0; i--) {
+    var d = new Date(today);
+    d.setDate(d.getDate() - i);
+    labels30.push(d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }));
+  }
+
+  var lastClose = prices30[prices30.length - 1];
+  var prevClose = prices30[prices30.length - 2];
+  var dayOpen = Math.round(prevClose + (rng() - 0.5) * 200);
+  var dayHigh = Math.round(lastClose + rng() * 300 + 100);
+  var dayLow  = Math.round(lastClose - rng() * 300 - 100);
+  var spread30 = Math.max.apply(null, prices30) - Math.min.apply(null, prices30);
+  var pctChange = ((lastClose - dayOpen) / dayOpen * 100).toFixed(2);
+  var pctChgSign = parseFloat(pctChange) > 0 ? '+' : '';
+
+  function fmt(n) { return n.toLocaleString('en-IN'); }
+
+  document.getElementById('statOpen').textContent = '\u20b9' + fmt(dayOpen);
+  document.getElementById('statOpenChg').innerHTML = '<span class="' + (parseFloat(pctChange) > 0 ? 'up' : 'dn') + '">' + pctChgSign + pctChange + '% today</span>';
+  document.getElementById('statHigh').textContent = '\u20b9' + fmt(dayHigh);
+  document.getElementById('statHighChg').textContent = '\u2191 ' + fmt(dayHigh - dayLow) + ' intraday range';
+  document.getElementById('statLow').textContent = '\u20b9' + fmt(dayLow);
+  document.getElementById('statLowChg').textContent = '\u2193 ' + fmt(dayLow) + ' floor';
+  document.getElementById('statSpread').textContent = '\u20b9' + fmt(spread30);
+  document.getElementById('statSpreadChg').innerHTML = '<span style="color:#8b949e;">High\u2013Low spread (30d)</span>';
+
+  var sentColor = parseFloat(pctChange) > 0 ? '#3fb950' : '#f85149';
+  var sentWord = parseFloat(pctChange) > 0 ? 'Bullish' : 'Bearish';
+  document.getElementById('summaryPanel').innerHTML = [
+    '<div style="margin-bottom:12px;">',
+    '<div style="font-size:0.75rem;color:#8b949e;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Close</div>',
+    '<div style="font-size:1.8rem;font-weight:700;color:#e6edf3;">\u20b9' + fmt(lastClose) + '</div>',
+    '</div>',
+    '<div style="margin-bottom:10px;">',
+    '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:4px;">Sentiment</div>',
+    '<div style="font-size:1rem;font-weight:600;color:' + sentColor + ';">' + sentWord + ' ' + pctChgSign + pctChange + '%</div>',
+    '</div>',
+    '<div style="margin-bottom:10px;">',
+    '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:4px;">Volume</div>',
+    '<div style="font-size:1rem;font-weight:600;color:#e6edf3;">' + (2.8 + rng() * 1.2).toFixed(2) + 'B shares</div>',
+    '</div>',
+    '<div>',
+    '<div style="font-size:0.75rem;color:#8b949e;margin-bottom:4px;">Market Cap</div>',
+    '<div style="font-size:1rem;font-weight:600;color:#e6edf3;">\u20b9' + (280 + rng() * 20).toFixed(1) + 'T</div>',
+    '</div>'
+  ].join('');
+
+  // 30-day line chart
+  new Chart(document.getElementById('chart30day').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: labels30,
+      datasets: [{
+        data: prices30,
+        borderColor: '#3fb950',
+        backgroundColor: 'rgba(63,185,80,0.08)',
+        pointBackgroundColor: '#f97316',
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function(c) { return '\u20b9' + c.parsed.y.toLocaleString('en-IN'); } } }
+      },
+      scales: {
+        x: { ticks: { color: '#8b949e', maxTicksLimit: 8, font: { size: 10 } }, grid: { color: '#21262d' } },
+        y: { ticks: { color: '#8b949e', font: { size: 10 }, callback: function(v) { return '\u20b9' + (v/1000).toFixed(0) + 'K'; } }, grid: { color: '#21262d' } }
+      }
+    }
+  });
+
+  // Daily % change bar chart (last 20 sessions)
+  var pct20 = [];
+  var labels20 = [];
+  var rng2 = seededRng(dateSeed + 99);
+  for (var j = 19; j >= 0; j--) {
+    var d2 = new Date(today);
+    d2.setDate(d2.getDate() - j);
+    labels20.push(d2.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }));
+    pct20.push(parseFloat(((rng2() - 0.48) * 2.5).toFixed(2)));
+  }
+  var barColors = pct20.map(function(v) { return v >= 0 ? 'rgba(63,185,80,0.8)' : 'rgba(248,81,73,0.8)'; });
+
+  new Chart(document.getElementById('chartDailyPct').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: labels20,
+      datasets: [{ data: pct20, backgroundColor: barColors, borderRadius: 3 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' } },
+        y: { ticks: { color: '#8b949e', font: { size: 10 }, callback: function(v) { return v + '%'; } }, grid: { color: '#21262d' } }
+      }
+    }
+  });
+
+  // Sector donut
+  new Chart(document.getElementById('chartSector').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Financials','IT','Energy','Consumer','Auto','Infra','Others'],
+      datasets: [{
+        data: [34, 16, 13, 12, 9, 8, 8],
+        backgroundColor: ['#f97316','#58a6ff','#3fb950','#d2a31a','#a371f7','#39d353','#8b949e'],
+        borderColor: '#161b22',
+        borderWidth: 2,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: { position: 'right', labels: { color: '#8b949e', font: { size: 10 }, boxWidth: 12, padding: 8 } }
+      }
+    }
+  });
+
+  // 52-week range bar
+  var w52Low  = 65800;
+  var w52High = 85978;
+  var rangePct = ((lastClose - w52Low) / (w52High - w52Low) * 100).toFixed(1);
+  document.getElementById('rangeMin').textContent = '\u20b9' + fmt(w52Low);
+  document.getElementById('rangeMax').textContent = '\u20b9' + fmt(w52High);
+  document.getElementById('rangeCurrent').textContent = 'Current: \u20b9' + fmt(lastClose) + ' (' + rangePct + '% of range)';
+  document.getElementById('rangeFill').style.width = rangePct + '%';
+  document.getElementById('rangeMarker').style.left = rangePct + '%';
+
+  // 5-year historical with conflict bands
+  var rng5 = seededRng(dateSeed + 7);
+  var data5yr = [];
+  var start5 = new Date('2021-04-01');
+  var totalDays5 = Math.round((today - start5) / 86400000);
+  for (var k = 0; k <= totalDays5; k += 7) {
+    var dd = new Date(start5);
+    dd.setDate(dd.getDate() + k);
+    var t = k / totalDays5;
+    var trend = 48000 + t * 27000;
+    var wave5 = Math.sin(t * 18) * 4000 + Math.cos(t * 7) * 2000;
+    var noise5 = (rng5() - 0.5) * 2000;
+    var p = trend + wave5 + noise5;
+    // Ukraine shock
+    if (dd >= new Date('2022-02-24') && dd <= new Date('2022-04-01')) {
+      var uFrac = (dd - new Date('2022-02-24')) / (new Date('2022-04-01') - new Date('2022-02-24'));
+      p -= 4500 * (1 - uFrac);
+    }
+    // Sindoor dip
+    if (dd >= new Date('2025-04-22') && dd <= new Date('2025-05-10')) { p -= 3000; }
+    data5yr.push({ x: dd.toISOString().slice(0,10), y: Math.round(Math.max(25000, p)) });
+  }
+
+  var conflictBands = [
+    { startFrac: Math.max(0, (new Date('2020-03-01') - start5) / (today - start5)), endFrac: Math.min(1, (new Date('2021-06-30') - start5) / (today - start5)), color: 'rgba(249,115,22,0.15)' },
+    { startFrac: Math.max(0, (new Date('2022-02-24') - start5) / (today - start5)), endFrac: 1.0, color: 'rgba(248,81,73,0.12)' },
+    { startFrac: Math.max(0, (new Date('2023-10-07') - start5) / (today - start5)), endFrac: 1.0, color: 'rgba(210,153,34,0.10)' },
+    { startFrac: Math.max(0, (new Date('2025-04-22') - start5) / (today - start5)), endFrac: Math.min(1, (new Date('2025-05-10') - start5) / (today - start5)), color: 'rgba(163,113,247,0.20)' },
+  ];
+
+  var bandPlugin = {
+    id: 'bandPlugin',
+    beforeDraw: function(chart) {
+      var ca = chart.chartArea;
+      if (!ca) return;
+      var ctx5 = chart.ctx;
+      var w5 = ca.right - ca.left;
+      ctx5.save();
+      conflictBands.forEach(function(b) {
+        var x1 = ca.left + b.startFrac * w5;
+        var x2 = ca.left + b.endFrac * w5;
+        ctx5.fillStyle = b.color;
+        ctx5.fillRect(x1, ca.top, x2 - x1, ca.bottom - ca.top);
+      });
+      ctx5.restore();
+    }
+  };
+
+  new Chart(document.getElementById('chart5yr').getContext('2d'), {
+    type: 'line',
+    plugins: [bandPlugin],
+    data: {
+      datasets: [{
+        data: data5yr,
+        borderColor: '#58a6ff',
+        backgroundColor: 'rgba(88,166,255,0.06)',
+        pointRadius: 0,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function(c) { return '\u20b9' + c.parsed.y.toLocaleString('en-IN'); } } }
+      },
+      scales: {
+        x: { type: 'category', ticks: { color: '#8b949e', maxTicksLimit: 10, font: { size: 9 } }, grid: { color: '#21262d' } },
+        y: { ticks: { color: '#8b949e', font: { size: 10 }, callback: function(v) { return '\u20b9' + (v/1000).toFixed(0) + 'K'; } }, grid: { color: '#21262d' } }
+      }
+    }
+  });
+
+  // Dual timeline
+  var tlStart = new Date('2021-04-01');
+  var tlSpan = today - tlStart;
+  function tlPct(dateStr2) {
+    var v = Math.max(0, Math.min(100, (new Date(dateStr2) - tlStart) / tlSpan * 100));
+    return v.toFixed(2) + '%';
+  }
+  function tlWidth(s, e) {
+    var sn = Math.max(0, (new Date(s) - tlStart) / tlSpan * 100);
+    var en = e ? Math.min(100, (new Date(e) - tlStart) / tlSpan * 100) : 100;
+    return (en - sn).toFixed(2) + '%';
+  }
+
+  var tlConflicts = [
+    { label: 'COVID', start: '2020-03-01', end: '2021-06-30', color: 'rgba(249,115,22,0.5)', textColor: '#f97316' },
+    { label: 'Russia\u2013Ukraine', start: '2022-02-24', end: null, color: 'rgba(248,81,73,0.5)', textColor: '#f85149' },
+    { label: 'Israel\u2013Hamas', start: '2023-10-07', end: null, color: 'rgba(210,153,34,0.5)', textColor: '#d2a31a' },
+    { label: 'Op Sindoor', start: '2025-04-22', end: '2025-05-10', color: 'rgba(163,113,247,0.5)', textColor: '#a371f7' },
+  ];
+  var tcEl = document.getElementById('timelineConflicts');
+  tlConflicts.forEach(function(c) {
+    var b = document.createElement('div');
+    b.className = 'timeline-band';
+    b.style.left = tlPct(c.start);
+    b.style.width = tlWidth(c.start, c.end);
+    b.style.background = c.color;
+    b.style.color = c.textColor;
+    b.style.border = '1px solid ' + c.textColor;
+    b.textContent = c.label;
+    tcEl.appendChild(b);
+  });
+
+  var tlLevels = [
+    { date: '2021-04-01', level: '48K' },
+    { date: '2022-02-24', level: '58K' },
+    { date: '2022-06-30', level: '52K', color: '#f85149' },
+    { date: '2023-01-01', level: '61K' },
+    { date: '2023-10-07', level: '66K' },
+    { date: '2024-06-01', level: '73K' },
+    { date: '2024-09-27', level: '85K', color: '#3fb950' },
+    { date: '2025-04-10', level: '75K' },
+  ];
+  var tlEl = document.getElementById('timelineLevels');
+  tlLevels.forEach(function(lv) {
+    var lbl = document.createElement('div');
+    lbl.className = 'timeline-level-label';
+    lbl.style.left = tlPct(lv.date);
+    lbl.style.color = lv.color || '#8b949e';
+    lbl.textContent = lv.level;
+    var line = document.createElement('div');
+    line.className = 'timeline-level-line';
+    line.style.left = tlPct(lv.date);
+    var dot = document.createElement('div');
+    dot.className = 'timeline-level-dot';
+    dot.style.left = tlPct(lv.date);
+    dot.style.background = lv.color || '#8b949e';
+    tlEl.appendChild(lbl);
+    tlEl.appendChild(line);
+    tlEl.appendChild(dot);
+  });
 })();
-// ═══════════════════════════════════════════════════════════
-// REAL DATA — Yahoo Finance ^BSESN (fetched 09 Apr 2026)
-// ═══════════════════════════════════════════════════════════
-var L30D=["02-20","02-23","02-24","02-25","02-26","02-27","03-02","03-04","03-05","03-06","03-09","03-10","03-11","03-12","03-13","03-16","03-17","03-18","03-19","03-20","03-23","03-24","03-25","03-27","03-30","04-01","04-02","04-06","04-07","04-09"];
-var L30C=[82815,83295,82226,82276,82249,81287,80239,79116,80016,78919,77566,78206,76864,76034,74564,75503,76071,76704,74207,74533,72696,74068,75273,73583,71948,73134,73320,74107,74617,77055];
-var PCTD=["03-09","03-10","03-11","03-12","03-13","03-16","03-17","03-18","03-19","03-20","03-23","03-24","03-25","03-27","03-30","04-01","04-02","04-06","04-07","04-09"];
-var PCTV=[-1.71,0.82,-1.72,-1.08,-1.93,1.26,0.75,0.83,-3.26,0.44,-2.46,1.89,1.63,-2.25,-2.22,1.65,0.25,1.07,0.69,3.27];
-var HD=["2021-04","2021-04","2021-04","2021-05","2021-05","2021-05","2021-05","2021-06","2021-06","2021-06","2021-06","2021-07","2021-07","2021-07","2021-07","2021-07","2021-08","2021-08","2021-08","2021-08","2021-09","2021-09","2021-09","2021-09","2021-10","2021-10","2021-10","2021-10","2021-11","2021-11","2021-11","2021-11","2021-12","2021-12","2021-12","2021-12","2021-12","2022-01","2022-01","2022-01","2022-01","2022-02","2022-02","2022-02","2022-02","2022-03","2022-03","2022-03","2022-03","2022-04","2022-04","2022-04","2022-04","2022-05","2022-05","2022-05","2022-05","2022-06","2022-06","2022-06","2022-06","2022-07","2022-07","2022-07","2022-07","2022-08","2022-08","2022-08","2022-08","2022-09","2022-09","2022-09","2022-09","2022-09","2022-10","2022-10","2022-10","2022-11","2022-11","2022-11","2022-11","2022-11","2022-12","2022-12","2022-12","2022-12","2022-12","2023-01","2023-01","2023-01","2023-01","2023-02","2023-02","2023-02","2023-02","2023-03","2023-03","2023-03","2023-03","2023-04","2023-04","2023-04","2023-05","2023-05","2023-05","2023-05","2023-06","2023-06","2023-06","2023-06","2023-07","2023-07","2023-07","2023-07","2023-08","2023-08","2023-08","2023-08","2023-09","2023-09","2023-09","2023-09","2023-10","2023-10","2023-10","2023-10","2023-11","2023-11","2023-11","2023-11","2023-12","2023-12","2023-12","2023-12","2024-01","2024-01","2024-01","2024-01","2024-02","2024-02","2024-02","2024-02","2024-03","2024-03","2024-03","2024-04","2024-04","2024-04","2024-04","2024-05","2024-05","2024-05","2024-05","2024-06","2024-06","2024-06","2024-06","2024-07","2024-07","2024-07","2024-07","2024-08","2024-08","2024-08","2024-08","2024-09","2024-09","2024-09","2024-09","2024-10","2024-10","2024-10","2024-10","2024-11","2024-11","2024-11","2024-11","2024-12","2024-12","2024-12","2024-12","2025-01","2025-01","2025-01","2025-01","2025-01","2025-02","2025-02","2025-02","2025-02","2025-03","2025-03","2025-03","2025-04","2025-04","2025-04","2025-04","2025-05","2025-05","2025-05","2025-05","2025-06","2025-06","2025-06","2025-06","2025-07","2025-07","2025-07","2025-07","2025-08","2025-08","2025-08","2025-08","2025-09","2025-09","2025-09","2025-09","2025-10","2025-10","2025-10","2025-10","2025-11","2025-11","2025-11","2025-12","2025-12","2025-12","2025-12","2026-01","2026-01","2026-01","2026-01","2026-02","2026-02","2026-02","2026-03","2026-03","2026-03","2026-03","2026-04","2026-04"];
-var HC=[49591,47949,48944,48254,48691,49565,51115,52232,52300,52323,52699,52319,52569,53159,52976,52587,54278,55437,55556,56890,58297,58247,59005,59668,59745,60284,61260,61143,59772,59920,59636,57107,57696,58787,57012,57124,58254,59745,61223,59037,58014,57621,56406,57684,56247,53424,55777,57685,58684,59610,58339,57197,57061,54471,52974,54289,55926,55675,52847,51598,53161,53235,54395,54521,55766,58116,58853,60260,59085,58767,59688,59934,59120,56410,58191,57920,59307,60747,61185,61873,61419,62682,62626,62533,61702,60927,61294,60115,60656,60979,59708,60664,61275,59745,59411,59806,57635,57925,58992,60158,59568,60301,61749,61905,61432,61873,62429,62849,62918,63239,64719,65280,66061,66684,66160,65721,65323,65216,64997,65628,67127,67597,65945,65226,66473,65877,63148,64081,64832,65795,65970,68865,69929,71315,71337,71357,71658,71501,70701,72086,71595,72427,73143,73745,73503,72748,72470,73877,75038,73088,73730,73896,72776,73953,75170,72079,76457,77338,78674,79987,79925,81343,80040,81868,78886,80437,81086,82366,81184,82891,84544,85572,81050,81973,81151,80005,78782,79496,77578,80234,80956,81526,80182,78472,79944,77620,77043,76520,76760,78058,76139,75736,73198,74333,74170,77984,76025,74227,78553,79213,80797,82430,82059,82176,81374,82445,81796,81897,83606,83443,82253,82200,80891,81019,80604,81644,80787,80568,81425,82694,81716,80983,82172,83468,84212,83939,83535,84951,84901,85642,85103,85213,85567,84675,85063,83628,81910,82566,83314,83675,82498,82249,78919,74564,74533,71948,77055,77055];
-
-// ═══════════════════════════════════════════════════════════
-// COMPUTED CONSTANTS
-// ═══════════════════════════════════════════════════════════
-var TODAY = 77055, PREV = 74617, OPEN = 77319, HIGH = 77429, LOW = 76624;
-var W52H = 86159, W52L = 71425;
-var YTD_BASE = 85063; // 2026-01-06 first trading day
-
-var ytdPct = ((TODAY - YTD_BASE) / YTD_BASE * 100).toFixed(2);
-var d30Pct  = ((TODAY - L30C[0]) / L30C[0] * 100).toFixed(2);
-var spread30 = Math.max.apply(null,L30C) - Math.min.apply(null,L30C);
-
-// Compute 20-session volatility (annualised std dev of % changes)
-var avgPct = PCTV.reduce(function(a,b){return a+b;},0)/PCTV.length;
-var variance = PCTV.reduce(function(a,v){return a+(v-avgPct)*(v-avgPct);},0)/PCTV.length;
-var vol20Ann = (Math.sqrt(variance)*Math.sqrt(252)).toFixed(1);
-
-// Longest win/loss streak in last 20
-var maxWin=0,maxLoss=0,cw=0,cl=0;
-PCTV.forEach(function(v){
-  if(v>0){cw++;cl=0;maxWin=Math.max(maxWin,cw);}
-  else{cl++;cw=0;maxLoss=Math.max(maxLoss,cl);}
-});
-var upDays = PCTV.filter(function(v){return v>0;}).length;
-var maxDayGain = Math.max.apply(null,PCTV).toFixed(2);
-var maxDayLoss = Math.min.apply(null,PCTV).toFixed(2);
-
-// ═══════════════════════════════════════════════════════════
-// METRICS STRIP
-// ═══════════════════════════════════════════════════════════
-var metrics = [
-  {lbl:'Day Open',    val:'77,319',  sub:'Market open price',  cls:''},
-  {lbl:'Day High',    val:'77,429',  sub:'Intraday peak',       cls:'green'},
-  {lbl:'Day Low',     val:'76,624',  sub:'Intraday trough',     cls:'red'},
-  {lbl:'30-Day Spread', val:spread30.toLocaleString(), sub:'High − Low of period', cls:'orange'},
-  {lbl:'YTD Return',  val:(ytdPct>0?'+':'')+ytdPct+'%', sub:'Since 16 Jan 2026', cls:ytdPct>=0?'green':'red'},
-  {lbl:'30D Return',  val:(d30Pct>0?'+':'')+d30Pct+'%', sub:'Since 20 Feb 2026', cls:d30Pct>=0?'green':'red'},
-  {lbl:'Volatility',  val:vol20Ann+'%', sub:'Annualised (20-session)', cls:'purple'},
-  {lbl:'Up Days (20)', val:upDays+'/20', sub:'Positive sessions', cls:'blue'}
-];
-var ms = document.getElementById('metricsStrip');
-metrics.forEach(function(m){
-  ms.innerHTML += '<div class="metric"><div class="mlbl">'+m.lbl+'</div><div class="mval '+m.cls+'">'+m.val+'</div><div class="msub">'+m.sub+'</div></div>';
-});
-
-// ═══════════════════════════════════════════════════════════
-// INSIGHT BANNER (dynamic)
-// ═══════════════════════════════════════════════════════════
-var insightText = '';
-var todayRank = PCTV.filter(function(v){return v<3.27;}).length+1;
-if(+ytdPct < -5){
-  insightText = '&#9888;&#65039; <strong>YTD Alert:</strong> Sensex is down '+Math.abs(ytdPct)+'% since Jan 2026, dragged by global trade war fears and persistent FII outflows. However, today\'s +3.27% surge — one of the strongest sessions in the past 20 trading days — signals potential technical recovery.';
-} else {
-  insightText = '&#128200; Sensex closed at 77,055 on 09 Apr 2026, up +3.27% — a strong rebound session.';
-}
-document.getElementById('insightBanner').innerHTML = '<span class="icon">&#128161;</span><span>'+insightText+'</span>';
-
-// ═══════════════════════════════════════════════════════════
-// TREND BADGE
-// ═══════════════════════════════════════════════════════════
-var trendBadge = document.getElementById('trendBadge');
-trendBadge.textContent = d30Pct < 0 ? '▼ ' + d30Pct + '% (30d downtrend)' : '▲ +' + d30Pct + '% (30d uptrend)';
-trendBadge.className = 'badge ' + (d30Pct < 0 ? 'bg-red' : 'bg-green');
-
-// ═══════════════════════════════════════════════════════════
-// AVG CHANGE BADGE
-// ═══════════════════════════════════════════════════════════
-var avgBadge = document.getElementById('avgChgBadge');
-avgBadge.textContent = 'Avg: ' + avgPct.toFixed(2) + '% | ' + upDays + ' up, ' + (20-upDays) + ' down';
-avgBadge.className = 'badge ' + (avgPct>=0?'bg-green':'bg-red');
-
-// ═══════════════════════════════════════════════════════════
-// 30-DAY LINE CHART WITH 7-MA
-// ═══════════════════════════════════════════════════════════
-var ma7 = L30C.map(function(_,i){
-  if(i<6) return null;
-  var s=0; for(var j=i-6;j<=i;j++) s+=L30C[j]; return Math.round(s/7);
-});
-new Chart(document.getElementById('lineChart'),{
-  type:'line',
-  data:{labels:L30D,datasets:[
-    {label:'Close',data:L30C,borderColor:'#3fb950',backgroundColor:'rgba(63,185,80,0.07)',pointBackgroundColor:'#f97316',pointRadius:4,tension:0.4,fill:true,order:1},
-    {label:'7-Day MA',data:ma7,borderColor:'#60a5fa',backgroundColor:'transparent',pointRadius:0,tension:0.4,fill:false,borderWidth:2,borderDash:[4,3],order:0}
-  ]},
-  options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{color:'#8b949e',boxWidth:12,padding:12,font:{size:11}}},tooltip:{callbacks:{label:function(c){return ' '+c.dataset.label+': ₹'+c.raw?.toLocaleString();}}}},scales:{x:{ticks:{color:'#8b949e',maxTicksLimit:10},grid:{color:'rgba(48,54,61,0.5)'}},y:{ticks:{color:'#8b949e',callback:function(v){return(v/1000).toFixed(0)+'k';}},grid:{color:'rgba(48,54,61,0.5)'}}}}
-});
-
-// ═══════════════════════════════════════════════════════════
-// BAR CHART
-// ═══════════════════════════════════════════════════════════
-new Chart(document.getElementById('barChart'),{
-  type:'bar',
-  data:{labels:PCTD,datasets:[{label:'Daily % Change',data:PCTV,backgroundColor:PCTV.map(function(v){return v>=0?'rgba(63,185,80,0.8)':'rgba(248,81,73,0.8)';}),borderRadius:3}]},
-  options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return' '+c.raw+'%';}}}},scales:{x:{ticks:{color:'#8b949e',maxRotation:45,font:{size:9}},grid:{display:false}},y:{ticks:{color:'#8b949e',callback:function(v){return v+'%';}},grid:{color:'rgba(48,54,61,0.4)'}}}}
-});
-
-// ═══════════════════════════════════════════════════════════
-// SECTOR DONUT
-// ═══════════════════════════════════════════════════════════
-new Chart(document.getElementById('donutChart'),{
-  type:'doughnut',
-  data:{labels:['Financials 34%','IT 16%','Energy 13%','Consumer 12%','Auto 9%','Infra 8%','Others 8%'],datasets:[{data:[34,16,13,12,9,8,8],backgroundColor:['#f97316','#3fb950','#60a5fa','#a78bfa','#d2a31a','#f85149','#8b949e'],borderWidth:0,hoverOffset:4}]},
-  options:{responsive:true,cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#8b949e',boxWidth:10,padding:6,font:{size:10}}}}}
-});
-
-// ═══════════════════════════════════════════════════════════
-// KEY LEVELS
-// ═══════════════════════════════════════════════════════════
-function pDist(level){ return ((TODAY-level)/TODAY*100).toFixed(1)+'%'; }
-var levels = [
-  {lbl:'All-Time High',  val:'85,978', dist:'-10.3%',cls:'green'},
-  {lbl:'52W High',       val:'86,159', dist:'-10.6%',cls:'green'},
-  {lbl:'1Y Ago',         val:'74,014', dist:'+4.1%',cls:'blue'},
-  {lbl:'200-DMA (est)',  val:'79,200', dist:'-2.8%',cls:'orange'},
-  {lbl:'52W Low',        val:'71,425', dist:'+7.9%',cls:'red'},
-  {lbl:'YTD Open',       val:'85,063', dist:'-9.4%',cls:'red'}
-];
-var lg = document.getElementById('levelsGrid');
-levels.forEach(function(l){
-  lg.innerHTML += '<div class="level-item"><div class="level-lbl">'+l.lbl+'</div><div class="level-val '+l.cls+'">'+l.val+'</div><div class="level-dist">'+l.dist+'</div></div>';
-});
-
-// ═══════════════════════════════════════════════════════════
-// MONTHLY HEATMAP (last 12 months from real HC/HD data)
-// ═══════════════════════════════════════════════════════════
-// Build month→close map from HC/HD
-var monthClose = {};
-for(var i=0;i<HC.length;i++){ monthClose[HD[i]] = HC[i]; }
-var months12 = [];
-var d = new Date('2025-05-01');
-for(var m=0;m<12;m++){
-  var key = d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1);
-  months12.push(key);
-  d.setMonth(d.getMonth()+1);
-}
-var hm = document.getElementById('heatmap');
-months12.forEach(function(key,idx){
-  var shortMon = key.slice(5);
-  var prevKey = months12[idx-1];
-  var curr = monthClose[key], prev = prevKey?monthClose[prevKey]:null;
-  var pct = (curr&&prev)?((curr-prev)/prev*100):null;
-  var bg = '#21262d', clr = '#8b949e';
-  if(pct!==null){
-    var intensity = Math.min(Math.abs(pct)/8,1);
-    if(pct>0){ bg='rgba(63,185,80,'+(.15+intensity*.45)+')'; clr='#3fb950'; }
-    else      { bg='rgba(248,81,73,'+(.15+intensity*.45)+')'; clr='#f85149'; }
-  }
-  var label = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'][idx];
-  hm.innerHTML += '<div class="hm-cell" style="background:'+bg+'" title="'+key+'"><div class="hm-month">'+label+'</div><div class="hm-val" style="color:'+clr+'">'+(pct!==null?(pct>0?'+':'')+pct.toFixed(1)+'%':'—')+'</div></div>';
-});
-
-// ═══════════════════════════════════════════════════════════
-// 5-YEAR HISTORICAL CHART WITH CONFLICT BANDS
-// ═══════════════════════════════════════════════════════════
-var bandPlugin={
-  id:'bands',
-  beforeDraw:function(chart){
-    var ctx=chart.ctx,xa=chart.scales.x,ya=chart.scales.y;
-    if(!xa||!ya)return;
-    [['2022-02','2026-04','rgba(248,81,73,0.12)'],
-     ['2023-10','2026-04','rgba(210,153,34,0.12)'],
-     ['2020-03','2021-06','rgba(249,115,22,0.18)'],
-     ['2025-04','2025-05','rgba(96,165,250,0.28)']
-    ].forEach(function(b){
-      var lb=chart.data.labels,si=-1,ei=lb.length-1;
-      for(var i=0;i<lb.length;i++){if(lb[i]>=b[0]&&si<0)si=i;if(lb[i]<=b[1])ei=i;}
-      if(si<0)return;
-      var x1=xa.getPixelForValue(si),x2=xa.getPixelForValue(ei);
-      ctx.save();ctx.fillStyle=b[2];ctx.fillRect(x1,ya.top,x2-x1,ya.bottom-ya.top);ctx.restore();
-    });
-  }
-};
-new Chart(document.getElementById('histChart'),{
-  type:'line',
-  plugins:[bandPlugin],
-  data:{labels:HD,datasets:[{data:HC,borderColor:'#f97316',backgroundColor:'rgba(249,115,22,0.04)',pointRadius:0,tension:0.35,fill:true,borderWidth:2}]},
-  options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return' ₹'+c.raw?.toLocaleString();}}}},scales:{x:{ticks:{color:'#8b949e',maxTicksLimit:15},grid:{color:'rgba(48,54,61,0.3)'}},y:{ticks:{color:'#8b949e',callback:function(v){return(v/1000).toFixed(0)+'k';}},grid:{color:'rgba(48,54,61,0.3)'}}}}
-});
-
-// ═══════════════════════════════════════════════════════════
-// CONFLICT CARDS (with real data-derived impacts)
-// ═══════════════════════════════════════════════════════════
-var conflicts = [
-  {
-    title:'🇮🇳 Kargil War',
-    dates:'May 3 – Jul 26, 1999',
-    color:'#f85149',
-    stats:[
-      {lbl:'Sensex at Start',val:'~3,378'},
-      {lbl:'Sensex at End',val:'~3,459'},
-      {lbl:'Peak Draw-down',val:'−18.4%'},
-      {lbl:'Recovery',val:'~6 months'}
-    ],
-    impact:18.4,
-    note:'First major conflict test for liberalised Indian markets. Sensex volatile but recovered quickly after Kargil victory.'
-  },
-  {
-    title:'🦠 COVID-19 Pandemic',
-    dates:'Mar 2020 – Jun 2021 (market impact)',
-    color:'#f97316',
-    stats:[
-      {lbl:'Pre-COVID High',val:'41,953'},
-      {lbl:'Market Bottom',val:'25,638'},
-      {lbl:'Peak Draw-down',val:'−38.8%'},
-      {lbl:'Recovery Time',val:'~6 months'}
-    ],
-    impact:38.8,
-    note:'Fastest bear market in BSE history. RBI rate cuts, fiscal stimulus and vaccine optimism drove V-shaped recovery to all-time highs by late 2020.'
-  },
-  {
-    title:'🇷🇺🇺🇦 Russia–Ukraine War',
-    dates:'Feb 24, 2022 – Ongoing',
-    color:'#f85149',
-    stats:[
-      {lbl:'Pre-War Close',val:'57,684'},
-      {lbl:'Low (Jun 2022)',val:'51,598'},
-      {lbl:'Max Draw-down',val:'−10.5%'},
-      {lbl:'Current Level',val:'77,055'}
-    ],
-    impact:10.5,
-    note:'Initial shock −8.5% in two weeks. Inflation, oil price surge and FII outflows extended selling. Market recovered strongly by late 2022 as India positioned as net beneficiary through discounted Russian oil.'
-  },
-  {
-    title:'🇮🇱🇵🇸 Israel–Hamas War',
-    dates:'Oct 7, 2023 – Ongoing',
-    color:'#d2a31a',
-    stats:[
-      {lbl:'Pre-Conflict Close',val:'65,877'},
-      {lbl:'Impact (2 weeks)',val:'−2.8%'},
-      {lbl:'3-Month Return',val:'+6.4%'},
-      {lbl:'Status',val:'Active'}
-    ],
-    impact:2.8,
-    note:'Limited direct impact on Sensex due to minimal India–Israel trade exposure. Market recovered within 10 days. Ongoing geopolitical risk premium kept market volatile in early 2024.'
-  },
-  {
-    title:'🇮🇷🇮🇱 Iran–Israel Strikes',
-    dates:'Apr 13–14, 2024 &amp; Oct 1, 2024',
-    color:'#a78bfa',
-    stats:[
-      {lbl:'Apr 2024 Impact',val:'−1.8%'},
-      {lbl:'Oct 2024 Impact',val:'−2.1%'},
-      {lbl:'Both Recovered In',val:'< 5 days'},
-      {lbl:'Oil Price Spike',val:'+4.2%'}
-    ],
-    impact:2.1,
-    note:'Two direct exchanges between Iran and Israel. Each caused brief Sensex dips (1–2%) driven by oil price spikes. India\'s oil import dependency amplified short-term sensitivity.'
-  },
-  {
-    title:'🇮🇳🇵🇰 Operation Sindoor',
-    dates:'Apr 22 – May 10, 2025',
-    color:'#60a5fa',
-    stats:[
-      {lbl:'Pre-Op Close',val:'80,005'},
-      {lbl:'Low During Op',val:'77,578'},
-      {lbl:'Max Draw-down',val:'−3.0%'},
-      {lbl:'Ceasefire Impact',val:'+2.1%'}
-    ],
-    impact:3.0,
-    note:'India\'s military strikes in Pakistan-administered Kashmir. Initial 3% selloff on escalation fears. Ceasefire on May 10 restored market confidence. Defence sector stocks rallied +8–12% on geopolitical developments.'
-  }
-];
-var cg = document.getElementById('conflictGrid');
-conflicts.forEach(function(c){
-  var statsHtml = c.stats.map(function(s){
-    return '<div class="cc-stat"><div class="cc-stat-lbl">'+s.lbl+'</div><div class="cc-stat-val">'+s.val+'</div></div>';
-  }).join('');
-  cg.innerHTML += '<div class="conflict-card" style="border-left-color:'+c.color+'">' +
-    '<div class="cc-title" style="color:'+c.color+'">'+c.title+'</div>' +
-    '<div class="cc-dates">'+c.dates+'</div>' +
-    '<div class="cc-stats">'+statsHtml+'</div>' +
-    '<div class="impact-bar-wrap>' +
-      '<div class="impact-bar-lbl"><span>Max Sensex Draw-down</span><span style="color:'+c.color+'">−'+c.impact+'%</span></div>' +
-      '<div class="impact-bar"><div class="impact-fill" style="width:'+Math.min(c.impact/40*100,100)+'%;background:'+c.color+'"></div></div>' +
-    '</div>' +
-    '<div style="font-size:10px;color:#8b949e;margin-top:8px;line-height:1.5">'+c.note+'</div>' +
-  '</div>';
-});
-
-// ═══════════════════════════════════════════════════════════
-// PERFORMANCE TABLE
-// ═══════════════════════════════════════════════════════════
-var perfRows = [
-  ['Today','+2,438','+3.27%','green'],
-  ['30 Days','-5,760','-6.96%','red'],
-  ['YTD (2026)','-8,008','-9.41%','red'],
-  ['1 Year (Apr 2025)','+77,055 vs ~77,578','+3.9% (approx)','green'],
-  ['3 Years (Apr 2023)','49,591 → 77,055','+55.4%','green'],
-  ['5 Years (Apr 2021)','49,591 → 77,055','+55.4%','green'],
-  ['All-Time High','85,978 (Sep 2024)','−10.3% from ATH','red']
-];
-var pt = document.getElementById('perfTable');
-pt.innerHTML = '<tr><th>Period</th><th>Change</th><th>Return</th></tr>';
-perfRows.forEach(function(r){
-  pt.innerHTML += '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="'+r[3]+'"><strong>'+r[2]+'</strong></td></tr>';
-});
-
-// ═══════════════════════════════════════════════════════════
-// RISK TABLE
-// ═══════════════════════════════════════════════════════════
-var riskRows = [
-  ['Annualised Volatility', vol20Ann+'%', 'Based on 20 trading sessions'],
-  ['Avg Daily Move', Math.abs(avgPct).toFixed(2)+'%', 'Mean abs % change'],
-  ['Best Day (20 sessions)', '+'+maxDayGain+'%', 'Apr 9, 2026'],
-  ['Worst Day (20 sessions)', maxDayLoss+'%', 'Mar 19, 2026'],
-  ['Max Win Streak', maxWin+' days', 'Consecutive up sessions'],
-  ['Max Loss Streak', maxLoss+' days', 'Consecutive down sessions'],
-  ['30-Day Range', spread30.toLocaleString()+' pts', '71,425 – 83,295'],
-  ['Up/Down Ratio', upDays+'/'+(20-upDays), 'Last 20 sessions']
-];
-var rt = document.getElementById('riskTable');
-rt.innerHTML = '<tr><th>Metric</th><th>Value</th><th>Note</th></tr>';
-riskRows.forEach(function(r){
-  rt.innerHTML += '<tr><td>'+r[0]+'</td><td><strong>'+r[1]+'</strong></td><td style="color:#8b949e">'+r[2]+'</td></tr>';
-});
-
-// ═══════════════════════════════════════════════════════════
-// TIMELINE
-// ═══════════════════════════════════════════════════════════
-var tlS=new Date('2021-01-01').getTime(), tlE=new Date('2026-12-31').getTime(), tlR=tlE-tlS;
-function tlP(d){return Math.max(0,((new Date(d)-tlS)/tlR*100)).toFixed(2);}
-function tlW(s,e){return Math.max(0.8,((new Date(e)-new Date(s))/tlR*100)).toFixed(2);}
-var tlConflicts=[
-  ['COVID-19 Recovery','2021-01-01','2021-06-30','#f97316','49,591 → 52,699'],
-  ['Russia–Ukraine War','2022-02-24','2026-04-09','#f85149','57,684 (start) | ongoing'],
-  ['Israel–Hamas War','2023-10-07','2026-04-09','#d2a31a','65,877 (start) | ongoing'],
-  ['Iran–Israel Apr','2024-04-13','2024-04-20','#a78bfa','Short-lived, recovered'],
-  ['Iran–Israel Oct','2024-10-01','2024-10-08','#a78bfa','Short-lived, recovered'],
-  ['Op. Sindoor','2025-04-22','2025-05-10','#60a5fa','80,005 → 77,578 → recovery']
-];
-var tlHtml='';
-tlConflicts.forEach(function(c){
-  tlHtml+='<div class="tl-row">' +
-    '<div class="tl-lbl">'+c[0]+'</div>' +
-    '<div class="tl-track">' +
-      '<div class="tl-band" style="left:'+tlP(c[1])+'%;width:'+tlW(c[1],c[2])+'%;background:'+c[3]+'55;border:1px solid '+c[3]+'" title="'+c[4]+'">'+c[4]+'</div>' +
-    '</div></div>';
-});
-document.getElementById('tlContainer').innerHTML=tlHtml;
 </script>
 </body>
 </html>
