@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BSE Sensex 30 — Daily Infographic</title>
+<title>BSE Sensex 30 â Daily Infographic</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -155,12 +155,12 @@ var FETCH_TS = "2026-04-10T07:51:21Z";
   var el = document.getElementById('fetchTimeLbl');
   if(!el) return;
   var fetched = new Date(FETCH_TS);
-  var istMs = fetched.getTime() + (5*60+30)*60000;
-  var istDate = new Date(istMs);
-  var hh = istDate.getUTCHours(), mm = istDate.getUTCMinutes();
+  var sgtMs = fetched.getTime() + 8*60*60000;
+  var sgtDate = new Date(sgtMs);
+  var hh = sgtDate.getUTCHours(), mm = sgtDate.getUTCMinutes();
   var ap = hh >= 12 ? 'PM' : 'AM';
   hh = hh % 12 || 12;
-  var timeStr = hh + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ap + ' IST';
+  var timeStr = hh + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ap + ' SGT';
   var diffMin = Math.floor((Date.now() - fetched.getTime()) / 60000);
   var h = Math.floor(diffMin / 60), m = diffMin % 60;
   var ago = h > 0 ? h + 'h ' + m + 'm ago' : (m > 0 ? m + 'm ago' : 'just now');
